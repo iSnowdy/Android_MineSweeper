@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/loginBackgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/loginbackground" />
+
+    <LinearLayout
+        android:id="@+id/loginLayout"
+        style="@style/layoutStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/layout_shape"
+        android:orientation="vertical">
+
+        <!-- Header -->
+
+        <TextView
+            android:id="@+id/headerLogin"
+            style="@style/loginHeaderStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/loginHeader" />
+
+        <!-- Login Form -->
+
+        <EditText
+            android:id="@+id/userEmail"
+            style="@style/editTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/loginUserEmail"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/userPassword"
+            style="@style/editTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/loginUserPassword"
+            android:inputType="textPassword" />
+
+        <!-- Buttons -->
+
+        <Button
+            android:id="@+id/loginButton"
+            style="@style/loginButtonStyle"
+            android:layout_width="@dimen/buttonWidth"
+            android:layout_height="@dimen/buttonHeight"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/loginbutton"
+            android:elevation="20dp"
+            android:text="@string/loginButton" />
+
+        <Button
+            android:id="@+id/registerButton"
+            style="@style/loginButtonStyle"
+            android:layout_width="@dimen/buttonWidth"
+            android:layout_height="@dimen/buttonHeight"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/registerbutton"
+            android:text="@string/loginRegisterButton" />
+
+        <TextView
+            android:id="@+id/forgotPassword"
+            style="@style/editTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="20dp"
+            android:text="@string/loginForgotPassword" />
+
+
+    </LinearLayout>
+</FrameLayout>

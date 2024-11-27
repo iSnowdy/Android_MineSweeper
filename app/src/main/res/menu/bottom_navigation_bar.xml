@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/game_nav_item"
+        android:enabled="true"
+        android:icon="@drawable/game_svg"
+        android:title="@string/gameNavbar" />
+
+    <item
+        android:id="@+id/settings_nav_item"
+        android:enabled="true"
+        android:icon="@drawable/config_svg"
+        android:title="@string/configNavbar" />
+
+    <item
+        android:id="@+id/stats_nav_item"
+        android:enabled="true"
+        android:icon="@drawable/stats_svg"
+        android:title="@string/statsNavbar" />
+</menu>
+
+<!--
+TODO: Navigate between the different fragments of the app:
+TODO: Game, Configuration, Stats
+-->

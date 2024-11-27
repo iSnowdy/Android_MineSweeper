@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="red">#FF0000</color>
+
+    <color name="logoPink">#FF4893</color>
+    <color name="logoPurple">#4F46A3</color>
+
+    <!-- Login Background Colour -->
+    <color name="startLogin">#394DFA</color>
+    <color name="centerLogin">#394DFA</color>
+    <color name="endLogin">#383F81</color>
+
+    <!-- Login Buttons -->
+    <color name="loginButtonColour">#B8B8F3</color>
+
+    <!-- Layout Shape Colours -->
+    <color name="transparent">#15FFFFFF</color>
+    <color name="layoutColour">#CECCC8</color>
+</resources>

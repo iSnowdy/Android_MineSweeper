@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Login and Register -->
+
+    <style name="layoutStyle">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_margin">50dp</item>
+    </style>
+
+    <style name="loginHeaderStyle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/headerLoginSize</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/pixelify_sans_bold</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginBottom">80dp</item>
+        <item name="android:letterSpacing">0.2</item>
+    </style>
+
+    <style name="editTextStyle">
+        <item name="android:layout_margin">20dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/white</item> <!-- Hint EditText -->
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:letterSpacing">0.1</item>
+
+    </style>
+
+    <style name="loginButtonStyle">
+        <item name="android:letterSpacing">0.3</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginBottom">20dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textSize">@dimen/loginButtonSize</item>
+    </style>
+
+    <style name="registerHeaderStyle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/headerRegisterSize</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/pixelify_sans_bold</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginBottom">50dp</item>
+        <item name="android:letterSpacing">0.2</item>
+    </style>
+
+
+    <!-- Game Fragment -->
+
+
+    <!-- Settings Fragment -->
+    <style name="generalSettingsStyle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/settingsTextSizes</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:letterSpacing">0.1</item>
+
+    </style>
+
+    <style name="spinnerStyle" parent="generalSettingsStyle">
+        <item name="android:drawablePadding">20dp</item>
+        <item name="android:layout_marginTop">40dp</item>
+        <item name="android:layout_marginBottom">15dp</item>
+    </style>
+
+    <style name="settingsItemStyle" >
+        <item name="android:textSize">@dimen/settingsOptionSizes</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:letterSpacing">0.1</item>
+    </style>
+
+
+    <!-- Stats Fragment -->
+
+    <style name="generalStatsStyle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/statsTextSizes</item>
+        <item name="android:letterSpacing">0.1</item>
+        <item name="android:layout_margin">15dp</item>
+    </style>
+
+    <style name="innerSettingsTextStyle" parent="generalSettingsStyle">
+        <item name="fontFamily">@font/tilt_neon</item>
+        <item name="android:textSize">@dimen/statsTextSizes</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="medalsStyle">
+        <item name="android:layout_margin">10dp</item>
+    </style>
+
+    <style name="statResetButtonStyle">
+        <item name="android:textSize">@dimen/statsTextSizes</item>
+        <item name="android:letterSpacing">0.15</item>
+        <item name="android:layout_margin">10dp</item>
+
+    </style>
+
+
+</resources>

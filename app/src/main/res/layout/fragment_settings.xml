@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_bg_img"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <!--
+    <ImageView
+        android:id="@+id/bombImageSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/logoAlt"
+        android:src="@drawable/bomb_svg" />
+
+    -->
+
+    <!-- Difficulty -->
+    <TextView
+        android:id="@+id/difficultyText"
+        style="@style/spinnerStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/difficultySpinnerText"
+        app:drawableRightCompat="@drawable/info_svg" />
+
+    <Spinner
+        android:id="@+id/difficultySpinner"
+        style="@style/settingsItemStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- Theme -->
+    <TextView
+        android:id="@+id/themeText"
+        style="@style/spinnerStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/themeSpinnerText" />
+
+    <Spinner
+        android:id="@+id/themeSpinner"
+        style="@style/settingsItemStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- Background Music -->
+    <TextView
+        android:id="@+id/musicText"
+        style="@style/spinnerStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:text="@string/musicSpinnerText" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/musicSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp" />
+
+    <RadioGroup
+        android:id="@+id/themeRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/firstOption"
+            style="@style/settingsItemStyle"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="@string/firstOptionRadio" />
+
+        <RadioButton
+            android:id="@+id/secondOption"
+            style="@style/settingsItemStyle"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="@string/secondOptionRadio" />
+
+        <RadioButton
+            android:id="@+id/thirdOption"
+            style="@style/settingsItemStyle"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="@string/thirdOptionRadio" />
+
+    </RadioGroup>
+</LinearLayout>
+
+
+    <!--
+    TODO: In settings we will be able to:
+        TODO: 1. Select the difficulty
+        TODO: 2. Choose a theme (skin)
+        TODO: 3. Choose background music
+
+    TODO: Add an information SVG besides the difficulty spinner to
+    TODO: show the user what changes in each difficulty (TOAST)
+
+    TODO: Change background image?
+    -->

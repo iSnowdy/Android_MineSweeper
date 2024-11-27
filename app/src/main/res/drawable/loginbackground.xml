@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:startColor="@color/startLogin"
+        android:endColor="@color/endLogin"
+        android:centerColor="@color/loginButtonColour"
+        android:type="linear"
+        android:angle="90"
+        />
+    <!-- TODO: Maybe remove this? -->
+
+</shape>

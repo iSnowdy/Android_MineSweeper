@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">Minesweeper</string>
+    <string name="logoAlt">Bomb App Logo</string>
+
+    <!-- Login String Resources -->
+    <string name="loginHeader">Login</string>
+    <string name="loginUserEmail">Email Address</string>
+    <string name="loginUserPassword">Password</string>
+    <string name="loginButton">Login</string>
+    <string name="loginRegisterButton">Register</string>
+    <string name="loginForgotPassword"><u>Forgot Password?</u></string>
+
+
+    <!-- Register String Resources -->
+    <string name="registerHeader">Register</string>
+    <string name="registerUserEmail">Email Address</string>
+    <string name="registerUsername">Username</string>
+    <string name="registerConfirmPassword">Confirm Password</string>
+    <string name="registerButton">Register</string>
+    <string name="registerRedirect">Already have an account?</string>
+
+
+    <!-- Toolbar String Resources -->
+
+
+    <!-- Bottom Navbar String Resources -->
+    <string name="gameNavbar">Game</string>
+    <string name="configNavbar">Configuration</string>
+    <string name="statsNavbar">Stats</string>
+
+
+    <!-- Game Fragment -->
+    <string name="timeRemaining">Remaining Time </string>
+    <string name="minesRemaining">Mines Remaining </string>
+    <string name="resetButton">Reset Game</string>
+    <string name="favouriteButton">Favourite Button</string>
+    <string name="searchButton">Search Button</string>
+
+    <!-- Settings Fragment -->
+    <string name="difficultySpinnerText">Difficulty Level</string>
+    <string name="themeSpinnerText">Theme</string>
+    <string name="musicSpinnerText">Background Music</string>
+    <string name="firstOptionRadio">Placeholder 1</string>
+    <string name="secondOptionRadio">Placeholder 2</string>
+    <string name="thirdOptionRadio">Placeholder 3</string>
+
+    <string-array name="difficultySpinner">
+        <item>Easy</item>
+        <item>Medium</item>
+        <item>Hard</item>
+        <item>Customized</item>
+    </string-array>
+
+    <string-array name="themeSpinner">
+        <item>Default</item>
+        <item>Hello Kitty</item>
+        <item>Random</item>
+    </string-array>
+
+    <!-- Stats Fragment -->
+    <string name="avgTime">Average time:\t%1$2d seconds</string>
+    <string name="winPercentage">Win percentage:\t%1$d%</string>
+    <string name="wins">Wins:\t%1i</string>
+    <string name="losses">Losses:\t%1i</string>
+    <string name="gamesPlayed">Games played:\t%1i</string>
+    <string name="longestWinningStreak">Longest winning streak:\t%1i</string>
+    <string name="longestLosingStreak">Longest losing streak:\t%1i</string>
+    <string name="currentStreak">Current streak:\t%1i</string>
+
+    <string name="topThreeGames">Top three games</string>
+    <string name="firstTopGame">First top game</string>
+    <string name="secondTopGame">Second top game</string>
+    <string name="thirdTopGame">Third top game</string>
+
+    <string name="clearStatsButton">Reset statistics</string>
+
+
+
+
+
+</resources>

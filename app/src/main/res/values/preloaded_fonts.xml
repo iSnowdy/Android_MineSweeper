@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/montserrat_alternates_extralight</item>
+        <item>@font/pixelify_sans</item>
+        <item>@font/pixelify_sans_bold</item>
+        <item>@font/tilt_neon</item>
+    </array>
+</resources>

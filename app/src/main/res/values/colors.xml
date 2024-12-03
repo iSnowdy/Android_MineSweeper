@@ -18,4 +18,18 @@
     <!-- Layout Shape Colours -->
     <color name="transparent">#15FFFFFF</color>
     <color name="layoutColour">#CECCC8</color>
+
+
+    <!-- Color Palette? -->
+    <color name="lightGray">#F2F2F2</color>
+    <color name="darkGray">#333333</color>
+    <color name="darkBlue">#003366</color>
+    <color name="redDanger">#FF0000</color>
+    <color name="greenSafe">#008000</color>
+    <color name="yellow">#FFCC00</color>
+
+    <color name="startColor">#2196F3</color>
+    <color name="middleColor">#64B5F6</color>
+    <color name="endColor"></color>
+
 </resources>

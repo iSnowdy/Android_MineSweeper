@@ -36,13 +36,15 @@
             android:layout_height="match_parent"
             android:layout_margin="10dp"
             android:hint="@string/registerUsername"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="15" />
 
         <EditText
             android:id="@+id/registerEmail"
             style="@style/editTextStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:maxLength="100"
             android:layout_margin="10dp"
             android:hint="@string/loginUserEmail"
             android:inputType="textEmailAddress" />
@@ -69,7 +71,7 @@
         <!-- Buttons -->
 
         <Button
-            android:id="@+id/loginButton"
+            android:id="@+id/registerButtonRegister"
             style="@style/loginButtonStyle"
             android:layout_width="@dimen/buttonWidth"
             android:layout_height="@dimen/buttonHeight"
@@ -84,14 +86,6 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="@string/registerRedirect" />
-
-        <TextView
-            android:id="@+id/forgotPassword"
-            style="@style/editTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/loginForgotPassword" />
-
 
     </LinearLayout>
 </FrameLayout>

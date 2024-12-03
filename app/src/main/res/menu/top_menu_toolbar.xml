@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/searchButton"
-        android:icon="@drawable/search_svg"
-        android:title="@string/searchButton"
+        android:id="@+id/helpFragment"
+        android:icon="@drawable/help_circle_svg"
+        android:title="@string/helpFragment"
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/favouriteButton"
-        android:icon="@drawable/favourite_svg"
-        android:title="@string/favouriteButton"
+        android:id="@+id/logout"
+        android:icon="@drawable/logout_svg"
+        android:title="@string/logout"
         app:showAsAction="always" />
 </menu>

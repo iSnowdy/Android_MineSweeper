@@ -3,7 +3,6 @@
     <gradient
         android:startColor="@color/startLogin"
         android:endColor="@color/endLogin"
-        android:centerColor="@color/loginButtonColour"
         android:type="linear"
         android:angle="90"
         />

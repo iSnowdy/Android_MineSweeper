@@ -30,12 +30,12 @@
         <!-- Login Form -->
 
         <EditText
-            android:id="@+id/userEmail"
+            android:id="@+id/loginUsername"
             style="@style/editTextStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="@string/loginUserEmail"
-            android:inputType="textEmailAddress" />
+            android:hint="@string/loginUsername"
+            android:inputType="textPersonName" />
 
         <EditText
             android:id="@+id/userPassword"
@@ -58,7 +58,7 @@
             android:text="@string/loginButton" />
 
         <Button
-            android:id="@+id/registerButton"
+            android:id="@+id/registerButtonLogin"
             style="@style/loginButtonStyle"
             android:layout_width="@dimen/buttonWidth"
             android:layout_height="@dimen/buttonHeight"

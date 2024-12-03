@@ -4,6 +4,7 @@
 
     <!-- Login String Resources -->
     <string name="loginHeader">Login</string>
+    <string name="loginUsername">Username</string>
     <string name="loginUserEmail">Email Address</string>
     <string name="loginUserPassword">Password</string>
     <string name="loginButton">Login</string>
@@ -29,12 +30,13 @@
     <string name="statsNavbar">Stats</string>
 
 
-    <!-- Game Fragment -->
+    <!-- Toolbar(s) String Resources -->
+    <string name="helpFragment">Minesweeper Quick Guide</string>
+    <string name="logout">Logout</string>
+
     <string name="timeRemaining">Remaining Time </string>
     <string name="minesRemaining">Mines Remaining </string>
     <string name="resetButton">Reset Game</string>
-    <string name="favouriteButton">Favourite Button</string>
-    <string name="searchButton">Search Button</string>
 
     <!-- Settings Fragment -->
     <string name="difficultySpinnerText">Difficulty Level</string>
@@ -73,6 +75,10 @@
     <string name="thirdTopGame">Third top game</string>
 
     <string name="clearStatsButton">Reset statistics</string>
+
+
+    <!-- Game Fragment -->
+    <string name="restartGameButton">Restart Game</string>
 
 
 

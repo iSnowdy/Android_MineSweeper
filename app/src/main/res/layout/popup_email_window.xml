@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightGray"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/oneTimeCodePopUpWindow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/oneTimeCodeText"
+        android:inputType="number"
+        android:maxLength="4" />
+
+    <EditText
+        android:id="@+id/forgotPasswordPopUpWindow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:visibility="invisible"
+        android:hint="@string/loginUserPassword"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/forgotRepeatPasswordPopUpWindow"
+        android:layout_width="wrap_content"
+        android:visibility="invisible"
+        android:layout_height="wrap_content"
+        android:hint="@string/registerConfirmPassword"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/submitCodeButtonPopUpWindow"
+        style="@style/loginButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/loginbutton"
+        android:text="@string/submitCodeButton" />
+
+</LinearLayout>

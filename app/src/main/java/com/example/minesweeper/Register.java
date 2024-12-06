@@ -107,7 +107,7 @@ public class Register extends AppCompatActivity {
         redirectMessageToast("Password must be at least 6 characters long and contain at least one letter and one number");
         return false;
     }
-    // RafaCesur10
+    // Andy andylopezrey@hotmail.com Andy11
 
     private boolean isRepeatPasswordValid() {
         this.repeatPassword = retrieveInformationFromViewAsString(this.repeatUserPasswordEditText);

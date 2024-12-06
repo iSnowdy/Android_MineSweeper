@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         System.out.println("Resource id from the Status Bar is: " + resourceId);
         System.out.println("Status Bar Height is: " + statusBarHeight);
+
     }
 
     private void loadFragment(Fragment fragment) {

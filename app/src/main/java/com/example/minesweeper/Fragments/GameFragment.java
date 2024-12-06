@@ -30,6 +30,7 @@ import com.example.minesweeper.R;
 import com.example.minesweeper.Tile.GameTile;
 
 public class GameFragment extends Fragment {
+    // Chronometer in Java and in XMl too
     private Toolbar toolbar;
     private GridGameBoard board;
     private int rows;
@@ -122,7 +123,7 @@ public class GameFragment extends Fragment {
     private void initializeGrid() {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < columns; c++) {
-                // Creation of ImageButton for every tile
+                // Creation of ImageViews for every tile
                 ImageView tileButton = new ImageView(getActivity());
 
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();

@@ -10,6 +10,8 @@
     <string name="loginButton">Login</string>
     <string name="loginRegisterButton">Register</string>
     <string name="loginForgotPassword"><u>Forgot Password?</u></string>
+    <string name="oneTimeCodeText">4 digit code from your email</string>
+    <string name="submitCodeButton">Submit Code</string>
 
 
     <!-- Register String Resources -->

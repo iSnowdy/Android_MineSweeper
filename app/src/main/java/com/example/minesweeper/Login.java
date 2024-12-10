@@ -1,7 +1,6 @@
 package com.example.minesweeper;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -14,11 +13,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.minesweeper.Utils.JavaMailUtil;
+import com.example.minesweeper.Utils.SharedPreferencesUtil;
 import com.example.minesweeper.Utils.ToastUtil;
 
 import java.util.Map;
@@ -33,8 +32,7 @@ public class Login extends AppCompatActivity {
             loginButton, signInButton;
     private TextView forgotPasswordTextView;
     private int oneTimeCode;
-    private SharedPreferences loginSharedPreferences;
-    private SharedPreferences.Editor loginSharedPreferencesEditor;
+    private Map<String, ?> allUsers;
 
     // Forgot password resources
     private EditText
@@ -50,33 +48,23 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-
-        createRegisterSharedPreferences();
-        createRegisterSharedPreferencesEditor();
-
-        loadViews();
-        setListeners();
-
-        getAllUsers(); // Remove the method later on
+        getAllUsers();
+        printAllUsers();
+        loadLoginViews();
+        setLoginListeners();
     }
 
     private void getAllUsers() {
-        Map<String, ?> allUsers = this.loginSharedPreferences.getAll();
-        System.out.println("Registered Users:");
+        this.allUsers = SharedPreferencesUtil.getAllUsers(this);
+    }
 
-        for (Map.Entry<String, ?> entry : allUsers.entrySet()) {
+    private void printAllUsers() { // TODO: Remove later on
+        for (Map.Entry<String, ?> entry : this.allUsers.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
     }
+
     // Helper methods
-    private void createRegisterSharedPreferences() {
-        this.loginSharedPreferences = getSharedPreferences(SharedPreferences_Keys.USER_INFORMATION_SP.toString(), MODE_PRIVATE);
-    }
-
-    private void createRegisterSharedPreferencesEditor() {
-        this.loginSharedPreferencesEditor = this.loginSharedPreferences.edit();
-    }
-
     private void redirectMessageToast(String message) {
         ToastUtil.createToast(this, message);
     }
@@ -85,7 +73,7 @@ public class Login extends AppCompatActivity {
         return view.getText().toString();
     }
 
-    private void loadViews() {
+    private void loadLoginViews() {
         usernameEditText = findViewById(R.id.loginUsername);
         userPasswordEditText = findViewById(R.id.userPassword);
         loginButton = findViewById(R.id.loginButton);
@@ -120,7 +108,7 @@ public class Login extends AppCompatActivity {
         revealView(forgotRepeatPasswordEditText);
     }
 
-    private void setListeners() {
+    private void setLoginListeners() {
         loginButton.setOnClickListener(v -> setLoginOnClickListener());
         signInButton.setOnClickListener(v -> setRegisterOnClickListener());
         forgotPasswordTextView.setOnClickListener(v -> setForgotPasswordOnClickListener());
@@ -134,19 +122,14 @@ public class Login extends AppCompatActivity {
     }
 
     private boolean verifyLogin() {
-        String userKey = generateUserKey(retrieveInformationFromViewAsString(usernameEditText));
-        String userPassword = this.loginSharedPreferences.getString(userKey + SharedPreferences_Keys.PASSWORD.toString(), "");
+        String savedUserPassword = SharedPreferencesUtil.getUserInformation(this, this.username, SharedPreferences_Keys.PASSWORD.toString(), "");
 
-        return isUsernameValid(userKey)
-                && isUserPasswordValid(userPassword);
-    }
-    // Same method as the one in Register
-    private String generateUserKey(String username) {
-        return SharedPreferences_Keys.USER_INFORMATION_SP.toString() + "_" + username + "_";
+        return isUsernameValid()
+                && isUserPasswordValid(savedUserPassword);
     }
 
-    private boolean isUsernameValid(String userKey) {
-        String storedEmail = this.loginSharedPreferences.getString(userKey + SharedPreferences_Keys.EMAIL_ADDRESS.toString(), "");
+    private boolean isUsernameValid() {
+        String storedEmail = SharedPreferencesUtil.getUserInformation(this, this.username, SharedPreferences_Keys.EMAIL_ADDRESS.toString(), "");
 
         if (storedEmail == null) {
             redirectMessageToast("User does not exist");
@@ -241,9 +224,8 @@ public class Login extends AppCompatActivity {
     private boolean isEmailAddressValid(String usernameInput, String emailAddressInput) {
         // Iterates through every email in the SharedPreferences in search
         // for the user's email address
-        Map<String, ?> allUsers = this.loginSharedPreferences.getAll();
 
-        for (Map.Entry<String, ?> entry : allUsers.entrySet()) {
+        for (Map.Entry<String, ?> entry : this.allUsers.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue().toString();
 
@@ -364,21 +346,9 @@ public class Login extends AppCompatActivity {
 
     private void updatePasswordInSharedPreferences(String username) {
         String newPassword = retrieveInformationFromViewAsString(forgotPasswordEditText);
-
-        String userKey = generateUserKey(username);
-
-        deleteOldPassword(username);
-
-        this.loginSharedPreferencesEditor.putString(userKey + SharedPreferences_Keys.PASSWORD.toString(), newPassword);
-        this.loginSharedPreferencesEditor.apply();
-    }
-
-    private void deleteOldPassword(String username) {
-        String passwordKey = generateUserKey(username) + SharedPreferences_Keys.PASSWORD.toString();
-
-        if (this.loginSharedPreferences.contains(passwordKey)) {
-            this.loginSharedPreferencesEditor.remove(passwordKey);
-            this.loginSharedPreferencesEditor.apply();
-        }
+        // Deletes old password before creating the new one
+        SharedPreferencesUtil.deleteUserInformation(this, username, SharedPreferences_Keys.PASSWORD.toString());
+        // Now, save the new one
+        SharedPreferencesUtil.saveUserInformation(this, username, SharedPreferences_Keys.PASSWORD.toString(), newPassword);
     }
 }

@@ -11,7 +11,6 @@ package com.example.minesweeper.Fragments;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,7 +21,6 @@ import android.widget.ArrayAdapter;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -30,6 +28,7 @@ import com.example.minesweeper.Difficulty;
 import com.example.minesweeper.MainActivity;
 import com.example.minesweeper.R;
 import com.example.minesweeper.SharedPreferences_Keys;
+import com.example.minesweeper.Utils.SharedPreferencesUtil;
 import com.example.minesweeper.Utils.ToastUtil;
 
 
@@ -38,8 +37,6 @@ public class SettingsFragment extends Fragment {
     private Switch musicSwitch;
     private RadioGroup soundtrackRadioGroup;
     private Difficulty chosenDifficulty;
-    private SharedPreferences settingsSharedPreferences;
-    private SharedPreferences.Editor settingsSharedPreferencesEditor;
     private MediaPlayer mediaPlayer;
 
     @Override
@@ -48,11 +45,7 @@ public class SettingsFragment extends Fragment {
         ToastUtil.createToast(getActivity(), "Settings Fragment");
 
         View settingsView = inflater.inflate(R.layout.fragment_settings, container, false);
-
         loadSettingsViews(settingsView);
-
-        createSettingsSharedPreferences();
-        createSettingsSharedPreferencesEditor();
 
         // Difficulty Spinner Configuration
         createDifficultySpinner();
@@ -122,13 +115,14 @@ public class SettingsFragment extends Fragment {
     }
 
     private void saveDifficultySettingToSharedPreferences() {
-        this.settingsSharedPreferencesEditor.putString(SharedPreferences_Keys.DIFFICULTY.toString(), this.chosenDifficulty.toString());
-        this.settingsSharedPreferencesEditor.apply();
+        SharedPreferencesUtil.saveSetting(getActivity(), SharedPreferences_Keys.DIFFICULTY, this.chosenDifficulty.toString());
     }
 
     private void setSwitchMusicOnClick() {
         // Default to turned off
-        this.musicSwitch.setChecked(settingsSharedPreferences.getBoolean(SharedPreferences_Keys.BACKGROUND_MUSIC_STATE.toString(), false));
+        String musicSwitchState = SharedPreferencesUtil.getSetting(getActivity(), SharedPreferences_Keys.BACKGROUND_MUSIC_STATE, "Off");
+        // If it equals to On, returns true. Therefore, sets it to On
+        this.musicSwitch.setChecked(musicSwitchState.equals("On"));
 
         this.musicSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             saveMusicStateToSharedPreferences(isChecked);
@@ -142,8 +136,8 @@ public class SettingsFragment extends Fragment {
     }
 
     private void saveMusicStateToSharedPreferences(boolean musicState) {
-        this.settingsSharedPreferencesEditor.putBoolean(SharedPreferences_Keys.BACKGROUND_MUSIC_STATE.toString(), musicState);
-        this.settingsSharedPreferencesEditor.apply();
+        String musicStateString = musicState ? "On" : "Off";
+        SharedPreferencesUtil.saveSetting(getActivity(), SharedPreferences_Keys.BACKGROUND_MUSIC_STATE, musicStateString);
     }
 
     // RadioGroup Listener for Soundtrack
@@ -170,12 +164,12 @@ public class SettingsFragment extends Fragment {
     }
 
     private void saveSelectedSoundtrack(String soundtrack) {
-        settingsSharedPreferencesEditor.putString(SharedPreferences_Keys.CHOSEN_SOUNDTRACK.toString(), soundtrack);
-        settingsSharedPreferencesEditor.apply();
+        SharedPreferencesUtil.saveSetting(getActivity(), SharedPreferences_Keys.CHOSEN_SOUNDTRACK, soundtrack);
     }
 
     private int getRadioButtonIdFromSavedSoundtrack() {
-        String savedSoundtrack = settingsSharedPreferences.getString(SharedPreferences_Keys.CHOSEN_SOUNDTRACK.toString(), "Default");
+        String savedSoundtrack = SharedPreferencesUtil.getSetting(getActivity(), SharedPreferences_Keys.CHOSEN_SOUNDTRACK, "Default");
+
         switch (savedSoundtrack) {
             case "Epic": return R.id.secondOption;
             case "Chill": return R.id.thirdOption;
@@ -196,7 +190,7 @@ public class SettingsFragment extends Fragment {
 
     private String getChosenSoundtrackFromSharedPreferences() {
         // Retrieves the soundtrack from the settings SharedPreferences. By default play the default soundtrack
-        return this.settingsSharedPreferences.getString(SharedPreferences_Keys.CHOSEN_SOUNDTRACK.toString(), "Default");
+        return SharedPreferencesUtil.getSetting(getActivity(), SharedPreferences_Keys.CHOSEN_SOUNDTRACK, "Default");
     }
 
     private int getSoundtrackResourceId(String soundtrack) {
@@ -214,15 +208,6 @@ public class SettingsFragment extends Fragment {
             mediaPlayer = null;
         }
     }
-
-    private void createSettingsSharedPreferences() {
-        this.settingsSharedPreferences = getActivity().getSharedPreferences(SharedPreferences_Keys.SETTINGS_INFORMATION_SP.toString(), MODE_PRIVATE);
-    }
-
-    private void createSettingsSharedPreferencesEditor() {
-        this.settingsSharedPreferencesEditor = this.settingsSharedPreferences.edit();
-    }
-
 
     @Override
     public void onResume() {

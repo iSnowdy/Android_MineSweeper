@@ -35,6 +35,7 @@ import com.example.minesweeper.MainActivity;
 import com.example.minesweeper.R;
 import com.example.minesweeper.SharedPreferences_Keys;
 import com.example.minesweeper.Tile.GameTile;
+import com.example.minesweeper.Utils.SharedPreferencesUtil;
 
 public class GameFragment extends Fragment {
     private Toolbar toolbar;
@@ -44,8 +45,6 @@ public class GameFragment extends Fragment {
     private Game game;
     private Chronometer chronometer;
     private ChronometerHelper chronometerHelper;
-
-    private SharedPreferences settingsSharedPreferences;
 
     private int
             gameBoardRows, gameBoardColumns,
@@ -101,7 +100,6 @@ public class GameFragment extends Fragment {
         this.toolbar = getActivity().findViewById(R.id.toolbar);
         this.gridLayout = gameFragmentView.findViewById(R.id.gridLayout);
 
-        createSettingsSharedPreferences();
         // TODO: What happens if the user changes difficulty while playing one game?
         this.board = new GridGameBoard(loadDifficultyFromSettings());
         this.game = new Game(this.board);
@@ -126,13 +124,10 @@ public class GameFragment extends Fragment {
         return gameFragmentView;
     }
 
-    private void createSettingsSharedPreferences() {
-        this.settingsSharedPreferences = getActivity().getSharedPreferences(SharedPreferences_Keys.SETTINGS_INFORMATION_SP.toString(), MODE_PRIVATE);
-    }
-
     private Difficulty loadDifficultyFromSettings() {
         // Default value is EASY
-        return Difficulty.valueOf(this.settingsSharedPreferences.getString(SharedPreferences_Keys.DIFFICULTY.toString(), Difficulty.EASY.toString()));
+        String difficultyFromSharedPreferences = SharedPreferencesUtil.getSetting(getContext(), SharedPreferences_Keys.DIFFICULTY, Difficulty.EASY.toString());
+        return Difficulty.valueOf(difficultyFromSharedPreferences);
     }
 
     private void retrieveHeightFromMainActivity() {

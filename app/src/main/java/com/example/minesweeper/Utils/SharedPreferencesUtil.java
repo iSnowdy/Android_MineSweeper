@@ -14,6 +14,9 @@ import android.content.SharedPreferences;
 
 import com.example.minesweeper.SharedPreferences_Keys;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SharedPreferencesUtil {
     // Different types of SP used across the project
     private static final String LOGIN_SP = SharedPreferences_Keys.USER_INFORMATION_SP.toString();
@@ -63,11 +66,21 @@ public class SharedPreferencesUtil {
         return sp.getString(key.toString(), defaultValue);
     }
 
-
     //  ------ Stats SP ------
 
 
-    // Game SP
+    // Temporary method
+    public static Map<String, String> getAllUsers(Context context) {
+        SharedPreferences sp = getSpecificSharedPreferences(context, LOGIN_SP);
+        Map<String, ?> allEntries = sp.getAll();
+        Map<String, String> users = new HashMap<>();
 
+        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+            if (entry.getKey().contains(SharedPreferences_Keys.USERNAME.toString())) {
+                users.put(entry.getKey(), entry.getValue().toString());
+            }
+        }
+        return users;
+    }
 
 }

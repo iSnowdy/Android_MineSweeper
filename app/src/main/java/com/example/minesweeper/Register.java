@@ -1,15 +1,14 @@
 package com.example.minesweeper;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.minesweeper.Utils.SharedPreferencesUtil;
 import com.example.minesweeper.Utils.ToastUtil;
 
 public class Register extends AppCompatActivity {
@@ -20,19 +19,13 @@ public class Register extends AppCompatActivity {
     private Button registerButton;
     private TextView haveAnAccountTextView;
 
-    private SharedPreferences.Editor registerSharedPreferencesEditor;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
-        loadViews();
-
-        registerSharedPreferencesEditor = createRegisterSharedPreferencesEditor();
-
-        setListeners();
-
+        loadLoginViews();
+        setLoginListeners();
     }
 
     private String retrieveInformationFromViewAsString(EditText view) {
@@ -43,7 +36,7 @@ public class Register extends AppCompatActivity {
         ToastUtil.createToast(this, message);
     }
 
-    private void loadViews() {
+    private void loadLoginViews() {
         this.usernameEditText = findViewById(R.id.registerUsername);
         this.userEmailEditText = findViewById(R.id.registerEmail);
         this.userPasswordEditText = findViewById(R.id.registerPassword);
@@ -52,7 +45,7 @@ public class Register extends AppCompatActivity {
         this.haveAnAccountTextView = findViewById(R.id.haveAnAccount);
     }
 
-    private void setListeners() {
+    private void setLoginListeners() {
         this.registerButton.setOnClickListener(v -> setRegisterOnClickListener());
         this.haveAnAccountTextView.setOnClickListener(v -> setHaveAnAccountOnClickListener());
     }
@@ -119,30 +112,14 @@ public class Register extends AppCompatActivity {
     }
 
     private void registerUser() {
-        String userKey = generateUserKey(this.username);
-
         System.out.println("Putting the following information inside the " +
-                "Shared Preferences Bundle (" + userKey + "):");
+                "Shared Preferences Bundle of (" + this.username + "):");
         System.out.println("Username: " + this.username);
         System.out.println("Email address: " + this.emailAddress);
         System.out.println("Password: " + this.password);
 
-        this.registerSharedPreferencesEditor.putString(userKey + SharedPreferences_Keys.USERNAME.toString(), this.username);
-        this.registerSharedPreferencesEditor.putString(userKey + SharedPreferences_Keys.EMAIL_ADDRESS.toString(), this.emailAddress);
-        this.registerSharedPreferencesEditor.putString(userKey + SharedPreferences_Keys.PASSWORD.toString(), this.password);
-        this.registerSharedPreferencesEditor.apply();
-    }
-    // Generates a unique key for that user. This way we can handle multiple users simultaneously
-    // The other option, although more complicated, would be using JSON objects
-    private String generateUserKey(String username) {
-        return SharedPreferences_Keys.USER_INFORMATION_SP.toString() + "_" + username + "_";
-    }
-
-    private SharedPreferences createRegisterSharedPreferences() {
-        return getSharedPreferences(SharedPreferences_Keys.USER_INFORMATION_SP.toString(), MODE_PRIVATE);
-    }
-
-    private SharedPreferences.Editor createRegisterSharedPreferencesEditor() {
-        return createRegisterSharedPreferences().edit();
+        SharedPreferencesUtil.saveUserInformation(this, this.username, SharedPreferences_Keys.USERNAME.toString(), this.username);
+        SharedPreferencesUtil.saveUserInformation(this, this.username, SharedPreferences_Keys.EMAIL_ADDRESS.toString(), this.emailAddress);
+        SharedPreferencesUtil.saveUserInformation(this, this.username, SharedPreferences_Keys.PASSWORD.toString(), this.password);
     }
 }

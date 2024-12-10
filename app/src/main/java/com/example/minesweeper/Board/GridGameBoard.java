@@ -17,7 +17,6 @@ public class GridGameBoard implements GameBoard {
 
     public GridGameBoard(Difficulty difficulty) {
         this.DIFFICULTY = difficulty;
-        this.totalFlags = 0;
     }
 
     @Override
@@ -26,16 +25,12 @@ public class GridGameBoard implements GameBoard {
         initializeBoard();
     }
 
-    public void resetGame() {
-        this.totalFlags = 0;
-        startGame();
-    }
-
     // Difficulty configuration using the ENUM
     private void setDifficulty() {
         this.rows = DIFFICULTY.getSize();
         this.columns = DIFFICULTY.getSize();
         this.mines = DIFFICULTY.getMines();
+        this.totalFlags = mines;
     }
 
     private void initializeBoard() {
@@ -46,11 +41,10 @@ public class GridGameBoard implements GameBoard {
                 board[i][j] = new GameTile(i, j);
             }
         }
-        placeMines();
     }
 
     // Randomly place the mines
-    public void placeMines() {
+    public void placeMines(GameTile firstClickTile) {
         int minesPlaced = 0;
         while (minesPlaced < mines) {
             int row = (int) (Math.random() * rows);
@@ -58,7 +52,7 @@ public class GridGameBoard implements GameBoard {
 
             GameTile tile = board[row][col];
 
-            if (!tile.isMine()) {
+            if (!tile.isMine() && tile != firstClickTile) {
                 System.out.println("Placing mine at " + row + ", " + col);
                 tile.placeMine();
                 minesPlaced++;
@@ -70,9 +64,9 @@ public class GridGameBoard implements GameBoard {
     public void placeFlag(int row, int col) {
         GameTile tile = this.board[row][col];
         // If the tile is not revealed AND user has flags to put...
-        if (!tile.isRevealed() && this.totalFlags < this.mines) {
+        if (!tile.isRevealed() && this.totalFlags > 0) {
             tile.flag();
-            this.totalFlags++;
+            this.totalFlags--;
         }
     }
 
@@ -81,35 +75,7 @@ public class GridGameBoard implements GameBoard {
         // If the tile is not revealed AND the tile is flagged...
         if (!tile.isRevealed() && tile.isFlagged()) {
             tile.removeFlag(); // Flagged is checked inside method as well but meh
-            this.totalFlags--;
-        }
-    }
-
-    public void revealTile(int row, int col) {
-        GameTile tile = this.board[row][col];
-        if (!tile.isRevealed() && !tile.isFlagged()) {
-            tile.revealTile();
-            if (tile.isEmpty(this)) { // Call to behaviour of revealing everything until something is not empty
-                revealAdjacentTiles(row, col);
-            }
-        }
-    }
-
-    private void revealAdjacentTiles(int row, int col) {
-        for (int r = row - 1; r <= row + 1; r++) {
-            for (int c = col - 1; c <= col + 1; c++) {
-                // Inside limits
-                if (r >= 0 && r < rows && c >= 0 && c < columns) {
-                    GameTile tile = board[r][c];
-                    if (!tile.isRevealed() && !tile.isFlagged()) {
-                        tile.revealTile();
-                        if (tile.isEmpty(this)) {
-                            // Recursive tile until the tile is not empty. This achieves the behaviour of clearing all tiles if empty
-                            revealAdjacentTiles(r, c);
-                        }
-                    }
-                }
-            }
+            this.totalFlags++;
         }
     }
 

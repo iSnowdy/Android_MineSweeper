@@ -2,48 +2,60 @@ package com.example.minesweeper.Fragments;
 
 // Assets credit to: https://github.com/projojoboy/MineSweeper/blob/master/Assets/Art/mine.png
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.GridLayout;
-import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 
-import androidx.annotation.Dimension;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.minesweeper.Board.GridGameBoard;
+import com.example.minesweeper.Utils.ChronometerHelper;
 import com.example.minesweeper.Difficulty;
 import com.example.minesweeper.GameLogic.Game;
 import com.example.minesweeper.MainActivity;
 import com.example.minesweeper.R;
+import com.example.minesweeper.SharedPreferences_Keys;
 import com.example.minesweeper.Tile.GameTile;
 
 public class GameFragment extends Fragment {
-    // Chronometer in Java and in XMl too
     private Toolbar toolbar;
-    private GridGameBoard board;
-    private int rows;
-    private int columns;
+    private Menu menu;
     private GridLayout gridLayout;
+    private GridGameBoard board;
     private Game game;
+    private Chronometer chronometer;
+    private ChronometerHelper chronometerHelper;
+
+    private SharedPreferences settingsSharedPreferences;
+
+    private int
+            gameBoardRows, gameBoardColumns,
+            tileImageViewHeight, tileImageViewWidth;
     private boolean isFirstClick;
-    private int height;
-    private int width;
 
     private int toolbarHeight, navbarHeight, statusBarHeight, totalHeight;
 
-
+    // Toolbar + Chronometer Configuration
+    // Standard toolbar is replaced by a custom one for the Game Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,9 +64,32 @@ public class GameFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
         this.toolbar.getMenu().clear();
         inflater.inflate(R.menu.game_menu_toolbar, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+        this.menu = menu;
+
+        this.menu.findItem(R.id.timeRemaining).setActionView(chronometer);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.resetButton) {
+            restartGame();
+            return true;
+        } else if (id == R.id.minesLeft) {
+            updateMinesLeft();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void updateMinesLeft() {
+        int remainingFlags = this.board.getRemainingFlagsToUse();
+        this.menu.findItem(R.id.minesLeft).setTitle("Remaining Mines: " + remainingFlags);
+
     }
 
     @Override
@@ -65,11 +100,13 @@ public class GameFragment extends Fragment {
 
         this.toolbar = getActivity().findViewById(R.id.toolbar);
         this.gridLayout = gameFragmentView.findViewById(R.id.gridLayout);
-        // Somehow change the difficulty here depending on user's chosen difficulty
-        this.board = new GridGameBoard(Difficulty.EASY);
+
+        createSettingsSharedPreferences();
+        // TODO: What happens if the user changes difficulty while playing one game?
+        this.board = new GridGameBoard(loadDifficultyFromSettings());
         this.game = new Game(this.board);
 
-        this.isFirstClick = false;
+        this.isFirstClick = true;
 
         // Retrieves height values from toolbar, navbar and status bar from Main (where they
         // are created) and sets the height / width of the GameFragment according to those values
@@ -78,13 +115,25 @@ public class GameFragment extends Fragment {
 
         // Game Logic here
         this.game.startNewGame();
-        setSize();
-        setGridLayout();
-        initializeGrid();
+
+        this.chronometer = new Chronometer(getActivity());
+        initializeChronometer();
+
+        setGameBoardSize();
+        setGameBoardGridLayout();
+        loadDefaultViewsIntoGameGridLayout();
 
         return gameFragmentView;
     }
 
+    private void createSettingsSharedPreferences() {
+        this.settingsSharedPreferences = getActivity().getSharedPreferences(SharedPreferences_Keys.SETTINGS_INFORMATION_SP.toString(), MODE_PRIVATE);
+    }
+
+    private Difficulty loadDifficultyFromSettings() {
+        // Default value is EASY
+        return Difficulty.valueOf(this.settingsSharedPreferences.getString(SharedPreferences_Keys.DIFFICULTY.toString(), Difficulty.EASY.toString()));
+    }
 
     private void retrieveHeightFromMainActivity() {
         Bundle bundle = this.getArguments();
@@ -98,64 +147,111 @@ public class GameFragment extends Fragment {
     }
 
     private void setHeight() {
-        this.height = this.getHeight(this.getActivity()) - totalHeight;
-        this.width = this.getWidth(this.getActivity());
+        this.tileImageViewHeight = this.getHeight(this.getActivity()) - totalHeight;
+        this.tileImageViewWidth = this.getWidth(this.getActivity());
+    }
+
+    // Chronometer Configuration
+    private void initializeChronometer() {
+        this.chronometerHelper = new ChronometerHelper();
+        startChronometer();
+        styleChronometer();
+    }
+
+    public void startChronometer() {
+        if (this.chronometerHelper.getElapsedTime() == 0) {
+            this.chronometer.setBase(SystemClock.elapsedRealtime());
+        } else {
+            // Start where we left off
+            this.chronometer.setBase(SystemClock.elapsedRealtime() - this.chronometerHelper.getElapsedTime());
+        }
+        this.chronometer.start();
+    }
+
+    public void stopChronometer() {
+        // Calculates and saves the elapsed time
+        long timeElapsed = SystemClock.elapsedRealtime() - this.chronometer.getBase();
+        this.chronometerHelper.setElapsedTime(timeElapsed);
+
+        this.chronometer.stop();
+    }
+
+    private void styleChronometer() {
+        chronometer.setFormat("Time Remaining: %s");
+        chronometer.setTextColor(getResources().getColor(R.color.white));
+        chronometer.setTextSize(20);
+        chronometer.setPadding(10, 10, 10, 10);
+        chronometer.setBackgroundColor(getResources().getColor(R.color.black));
+    }
+
+    private void resetChronometer() {
+        this.chronometerHelper.reset();
+        this.chronometer.stop();
+        this.chronometer.setBase(SystemClock.elapsedRealtime());
+        this.chronometer.start();
     }
 
     private void restartGame() {
-        game.resetGame();
-        initializeGrid();
+        this.isFirstClick = true;
+        this.game.startNewGame();
+        resetChronometer();
+        loadDefaultViewsIntoGameGridLayout();
     }
 
-    private void setSize() {
-        this.rows = board.getRows();
-        this.columns = board.getColumns();
+    private void setGameBoardSize() {
+        this.gameBoardRows = board.getRows();
+        this.gameBoardColumns = board.getColumns();
     }
 
-    private void setGridLayout() {
+    private void setGameBoardGridLayout() {
         if (gridLayout != null) {
             this.gridLayout.removeAllViews();
-            this.gridLayout.setRowCount(this.rows);
-            this.gridLayout.setColumnCount(this.columns);
+            this.gridLayout.setRowCount(this.gameBoardRows);
+            this.gridLayout.setColumnCount(this.gameBoardColumns);
         }
     }
 
-    private void initializeGrid() {
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < columns; c++) {
+    private void loadDefaultViewsIntoGameGridLayout() {
+        for (int r = 0; r < gameBoardRows; r++) {
+            for (int c = 0; c < gameBoardColumns; c++) {
                 // Creation of ImageViews for every tile
-                ImageView tileButton = new ImageView(getActivity());
+                ImageView tileImageView = new ImageView(getActivity());
 
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                 params.rowSpec = GridLayout.spec(r, 1f);
                 params.columnSpec = GridLayout.spec(c, 1f);
                 params.width = GridLayout.LayoutParams.WRAP_CONTENT;
                 params.height = GridLayout.LayoutParams.WRAP_CONTENT;
-                tileButton.setLayoutParams(params);
+                tileImageView.setLayoutParams(params);
 
-                tileButton.setTag(this.board.getTile(r, c));
+                tileImageView.setTag(this.board.getTile(r, c));
 
-                tileButton.setImageResource(R.drawable.resource_default);
+                tileImageView.setImageResource(R.drawable.resource_default);
                 // Sets the size of each tile according to the height / width
                 // previously calculated
-                tileButton.setMinimumHeight(this.width / this.rows);
-                tileButton.setMinimumWidth(this.width / this.columns);
+                tileImageView.setMinimumHeight(this.tileImageViewWidth / this.gameBoardRows);
+                tileImageView.setMinimumWidth(this.tileImageViewWidth / this.gameBoardColumns);
 
-                tileButton.setScaleType(ImageView.ScaleType.FIT_XY);
+                tileImageView.setScaleType(ImageView.ScaleType.FIT_XY);
 
                 // Add the listener for every tile button
-                tileButton.setOnClickListener(v -> onTileClick((GameTile) v.getTag()));
+                tileImageView.setOnClickListener(v -> onTileClick((GameTile) v.getTag()));
                 // And a long click for putting the flags
-                tileButton.setOnLongClickListener(v -> {
+                tileImageView.setOnLongClickListener(v -> {
                     onTileLongClick((GameTile) v.getTag());
                     return true;
                 });
-                gridLayout.addView(tileButton);
+                gridLayout.addView(tileImageView);
             }
         }
     }
-
+    // TODO: Check if it is really working
     private void onTileClick(GameTile tile) {
+        if (isFirstClick) {
+            isFirstClick = false;
+            this.board.placeMines(tile);
+        }
+        // After the first click, reveal the tile
         if (!tile.isRevealed() && !tile.isFlagged()) {
             tile.revealTile();
             updateTileImage(tile); // Every click, update the UI
@@ -178,6 +274,7 @@ public class GameFragment extends Fragment {
     private void onFlagClick(GameTile tile) {
         if (!tile.isRevealed()) {
             tile.flag(); // Flag the tile
+            this.board.placeFlag(tile.getRow(), tile.getCol());
             updateTileImage(tile);
         }
     }
@@ -185,6 +282,7 @@ public class GameFragment extends Fragment {
     private void onUnflagClick(GameTile tile) {
         if (tile.isFlagged()) {
             tile.removeFlag(); // Unflagging the tile
+            this.board.removeFlag(tile.getRow(), tile.getCol());
             updateTileImage(tile);
         }
     }
@@ -202,6 +300,7 @@ public class GameFragment extends Fragment {
                     tileButton.setImageResource(getNumberImage(adjacentMines));
                 } else {
                     tileButton.setImageResource(R.drawable.empty0);
+                    revealAdjacentTiles(tile);
                 }
             }
 
@@ -217,16 +316,81 @@ public class GameFragment extends Fragment {
         return getResources().getIdentifier("empty" + number, "drawable", getActivity().getPackageName());
     }
 
+    private void revealAdjacentTiles(GameTile tile) {
+        int row = tile.getRow();
+        int col = tile.getCol();
+
+        for (int r = row - 1; r <= row + 1; r++) {
+            for (int c = col - 1; c <= col + 1; c++) {
+                if (r >= 0 && r < gameBoardRows && c >= 0 && c < gameBoardColumns) {
+                    GameTile adjacentTile = board.getTile(r, c);
+                    // Only if the tile is not revealed nor marked as a flag, reveal it
+                    if (!adjacentTile.isRevealed() && !adjacentTile.isFlagged()) {
+                        adjacentTile.revealTile();
+                        updateTileImage(adjacentTile);
+
+                        // And only if the tile is considered as empty, reveal the adjacent tiles
+                        // with a recursive call
+                        if (adjacentTile.isEmpty(this.board)) {
+                            revealAdjacentTiles(adjacentTile);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private void checkGameStatus() {
-        System.out.println("Checking Game Status");
         this.game.checkGameStatus();
-        // Alert
         // Alert Dialog
         if (game.isGameOver() && game.isGameLost()) {
             System.out.println("Game lost and over!");
+            int score = game.getScore();
+            showGameResultDialog(false, score);
         } else if (game.isGameOver() && !game.isGameLost()) {
             System.out.println("Game won and over!");
+            int score = game.getScore();
+            showGameResultDialog(true, score);
         }
+    }
+
+    public void showGameResultDialog(boolean isWin, int finalScore) {
+        String resultMessage;
+        String buttonText;
+        Drawable drawable;
+
+        // Determina el mensaje de acuerdo al resultado
+        if (isWin) {
+            resultMessage = "Congratulations! You have won";
+            drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.confetti_victory_svg, null);
+            buttonText = "Play again";
+        } else {
+            resultMessage = "Booo! You have lost";
+            drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.player_defeat_svg, null);
+            buttonText = "(Lose) again";
+        }
+
+        String finalMessage = resultMessage + "\n" + "Current game stats have been saved";
+        // TODO: Implement saving stats methods here
+
+        new AlertDialog.Builder(this.getContext())
+                .setTitle("Game Ended")
+                .setMessage(finalMessage)
+                .setCancelable(false) // Prevents the Alert Dialog from closing if the user didn't choose so
+                .setIcon(drawable)
+                .setPositiveButton(buttonText, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        restartGame();
+                    }
+                })
+                .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        getActivity().finish();
+                    }
+                })
+                .show();
     }
 
     // Get screen height
@@ -237,5 +401,24 @@ public class GameFragment extends Fragment {
     // Get screen width
     private int getWidth(Context context){
         return context.getResources().getDisplayMetrics().widthPixels;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) getActivity()).updateToolBarWithFragmentName();
+
+        startChronometer();
+        System.out.println("Game Fragment Resumed");
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden) {
+            stopChronometer();
+        } else {
+            startChronometer();
+        }
     }
 }

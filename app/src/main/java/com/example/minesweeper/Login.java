@@ -4,15 +4,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -21,11 +18,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.minesweeper.Utils.JavaMailUtil;
+import com.example.minesweeper.Utils.ToastUtil;
+
+import java.util.Map;
 import java.util.Random;
 
 public class Login extends AppCompatActivity {
     private EditText
-            usernameEditText, emailAddressEditText, userPasswordEditText;
+            usernameEditText, userPasswordEditText;
     private String
             username, emailAddress, password;
     private Button
@@ -37,8 +38,9 @@ public class Login extends AppCompatActivity {
 
     // Forgot password resources
     private EditText
-            oneTimeCodeEditText, forgotPasswordEditText, forgotRepeatPasswordEditText;
-    private Button submitCodeButton;
+            usernameEditTextPopUpWindow, emailEditTextPopUpWindow, oneTimeCodeEditText, forgotPasswordEditText, forgotRepeatPasswordEditText;
+    private Button
+            sendEmailButton, submitCodeButton, changePasswordButton;
     private LayoutInflater popUpWindowLayoutInflater;
     private View popUpView;
     private PopupWindow popupWindow;
@@ -55,20 +57,28 @@ public class Login extends AppCompatActivity {
         loadViews();
         setListeners();
 
+        getAllUsers(); // Remove the method later on
     }
 
+    private void getAllUsers() {
+        Map<String, ?> allUsers = this.loginSharedPreferences.getAll();
+        System.out.println("Registered Users:");
 
-
+        for (Map.Entry<String, ?> entry : allUsers.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+    }
+    // Helper methods
     private void createRegisterSharedPreferences() {
         this.loginSharedPreferences = getSharedPreferences(SharedPreferences_Keys.USER_INFORMATION_SP.toString(), MODE_PRIVATE);
     }
-    // Maybe not needed
+
     private void createRegisterSharedPreferencesEditor() {
         this.loginSharedPreferencesEditor = this.loginSharedPreferences.edit();
     }
 
     private void redirectMessageToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        ToastUtil.createToast(this, message);
     }
 
     private String retrieveInformationFromViewAsString(EditText view) {
@@ -87,21 +97,27 @@ public class Login extends AppCompatActivity {
         // A "casting" is needed in order to properly load the views. This is because
         // if we were to simply do findViewById(), it would throw a Null Pointer Exception
         // since it tries to find them in the root layout (R.layout.login)
+        usernameEditTextPopUpWindow = this.popupWindow.getContentView().findViewById(R.id.usernameForPopUpWindow);
+        emailEditTextPopUpWindow = this.popupWindow.getContentView().findViewById(R.id.emailPopUpWindow);
+        sendEmailButton = this.popupWindow.getContentView().findViewById(R.id.sendEmailButtonPopUpWindow);
         oneTimeCodeEditText = this.popupWindow.getContentView().findViewById(R.id.oneTimeCodePopUpWindow);
         forgotPasswordEditText = this.popupWindow.getContentView().findViewById(R.id.forgotPasswordPopUpWindow);
         forgotRepeatPasswordEditText = this.popupWindow.getContentView().findViewById(R.id.forgotRepeatPasswordPopUpWindow);
         submitCodeButton = this.popupWindow.getContentView().findViewById(R.id.submitCodeButtonPopUpWindow);
+        changePasswordButton = this.popupWindow.getContentView().findViewById(R.id.changePasswordPopUpWindow);
     }
 
-    private void setForgotPasswordEditTextVisibilityOff() {
-        forgotPasswordEditText.setVisibility(View.INVISIBLE);
-        forgotRepeatPasswordEditText.setVisibility(View.INVISIBLE);
+    private void hideView(View view) {
+        view.setVisibility(View.INVISIBLE);
+    }
 
+    private void revealView(View view) {
+        view.setVisibility(View.VISIBLE);
     }
 
     private void setForgotPasswordEditTextVisibilityOn() {
-        forgotPasswordEditText.setVisibility(View.VISIBLE);
-        forgotRepeatPasswordEditText.setVisibility(View.VISIBLE);
+        revealView(forgotPasswordEditText);
+        revealView(forgotRepeatPasswordEditText);
     }
 
     private void setListeners() {
@@ -112,33 +128,44 @@ public class Login extends AppCompatActivity {
 
     private void setLoginOnClickListener() {
         if (verifyLogin()) {
+            this.username = retrieveInformationFromViewAsString(usernameEditText);
             redirectToMainActivity();
         }
     }
 
     private boolean verifyLogin() {
-        String storedUsername = this.loginSharedPreferences.getString(SharedPreferences_Keys.USERNAME.toString(), "");
-        String storedPassword = this.loginSharedPreferences.getString(SharedPreferences_Keys.PASSWORD.toString(), "");
-        return isUsernameValid(storedUsername)
-                && isUserPasswordValid(storedPassword);
+        String userKey = generateUserKey(retrieveInformationFromViewAsString(usernameEditText));
+        String userPassword = this.loginSharedPreferences.getString(userKey + SharedPreferences_Keys.PASSWORD.toString(), "");
+
+        return isUsernameValid(userKey)
+                && isUserPasswordValid(userPassword);
+    }
+    // Same method as the one in Register
+    private String generateUserKey(String username) {
+        return SharedPreferences_Keys.USER_INFORMATION_SP.toString() + "_" + username + "_";
     }
 
-    private boolean isUsernameValid(String username) {
-        this.username = retrieveInformationFromViewAsString(usernameEditText);
-        if (!username.equals(this.username)) {
-            redirectMessageToast("Username is not valid");
+    private boolean isUsernameValid(String userKey) {
+        String storedEmail = this.loginSharedPreferences.getString(userKey + SharedPreferences_Keys.EMAIL_ADDRESS.toString(), "");
+
+        if (storedEmail == null) {
+            redirectMessageToast("User does not exist");
             return false;
         }
+        // The email is valid and therefore set it to instance variable
+        this.emailAddress = storedEmail;
         return true;
     }
 
     private boolean isUserPasswordValid(String userPassword) {
-        // TODO: The password *should* be hashed
-        this.password = retrieveInformationFromViewAsString(userPasswordEditText);
-        if (!userPassword.equals(this.password)) {
+        String givenPassword = retrieveInformationFromViewAsString(userPasswordEditText);
+
+        if (!userPassword.equals(givenPassword)) {
             redirectMessageToast("Password is not valid");
             return false;
         }
+        // Password is correct
+        this.password = givenPassword;
         return true;
     }
 
@@ -160,15 +187,15 @@ public class Login extends AppCompatActivity {
     }
 
     private void forgotPasswordOnClickListener() {
-        System.out.println("Inside listener");
-        sendEmailToUserToResetPassword();
         createPopUpWindow();
+
+        setListenerForSendEmailButton();
+        setListenerForSubmitCodeButton();
     }
+
     // https://www.youtube.com/watch?v=wxqgtEewdfo
     // https://stackoverflow.com/questions/27259614/android-popupwindow-elevation-does-not-show-shadow/50211489#50211489
     public void createPopUpWindow() {
-        System.out.println("Inside pop up window");
-
         this.popUpWindowLayoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         this.popUpView = popUpWindowLayoutInflater.inflate(R.layout.popup_email_window, null);
 
@@ -193,61 +220,64 @@ public class Login extends AppCompatActivity {
         this.popupWindow.showAtLocation(findViewById(R.id.loginFrameLayout), Gravity.CENTER, 0, 0);
         // Now that we have the PopUp Window created, we can proceed to load the views inside it
         loadForgotPasswordViews();
-
-        this.submitCodeButton.setOnClickListener(v -> submitCodeButtonOnClickListener());
     }
 
-    private void submitCodeButtonOnClickListener() {
-        String oneTimeCodeAsInput = retrieveInformationFromViewAsString(oneTimeCodeEditText);
+    private void setListenerForSendEmailButton() {
+        sendEmailButton.setOnClickListener(v -> sendEmailButtonOnClickListener());
+    }
 
-        if (oneTimeCodeAsInput.equals(String.valueOf(this.oneTimeCode))) {
-            System.out.println("Correct code!");
-            // Correct code. Therefore, allow the user to change passwords
-            setForgotPasswordEditTextVisibilityOn();
-            // TODO: Call to methods to change password
-            changeUserPassword();
+    private void sendEmailButtonOnClickListener() {
+        String userEmailAddress = retrieveInformationFromViewAsString(emailEditTextPopUpWindow);
+        String usernameInput = retrieveInformationFromViewAsString(usernameEditTextPopUpWindow);
+
+        if (isEmailAddressValid(usernameInput, userEmailAddress)) {
+            sendEmailToUserToResetPassword();
+            redirectMessageToast("An email has been sent to you");
         } else {
-            System.out.println("Invalid Code");
-            // Wrong code. Feedback + dismiss window
-            redirectMessageToast("One time code is not valid");
-            popupWindow.dismiss();
+            redirectMessageToast("Invalid email address");
         }
     }
 
-    private void changeUserPassword() {
-        if (validateNewPassword()) changePassword();
-        else {
-            // Invalid passwords. They do not match and/or invalid format. Feedback
-            redirectMessageToast("Invalid Passwords. Please try again");
-            this.popupWindow.dismiss();
-        }
-    }
-    // Validation Regex from Register
-    private boolean validateNewPassword() {
-        String newPassword = retrieveInformationFromViewAsString(forgotPasswordEditText);
-        String repeatPassword = retrieveInformationFromViewAsString(forgotRepeatPasswordEditText);
-        return newPassword.equals(repeatPassword) &&
-                newPassword.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$");
-    }
+    private boolean isEmailAddressValid(String usernameInput, String emailAddressInput) {
+        // Iterates through every email in the SharedPreferences in search
+        // for the user's email address
+        Map<String, ?> allUsers = this.loginSharedPreferences.getAll();
 
-    private void changePassword() {
-        String newPassword = retrieveInformationFromViewAsString(forgotPasswordEditText);
-        this.loginSharedPreferencesEditor.putString(SharedPreferences_Keys.PASSWORD.toString(), newPassword);
-        this.loginSharedPreferencesEditor.apply();
-        redirectMessageToast("Password changed successfully");
+        for (Map.Entry<String, ?> entry : allUsers.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue().toString();
+
+            // Check for matches of username AND email address
+            if (
+                    key.equals(SharedPreferences_Keys.USER_INFORMATION_SP.toString() +
+                    "_" + usernameInput + "_" +
+                    SharedPreferences_Keys.EMAIL_ADDRESS.toString())
+                            &&
+                    value.equals(emailAddressInput)) {
+
+                this.username = usernameInput;
+                this.emailAddress = emailAddressInput;
+
+                //System.out.println("Found matching username and email in Shared Preferences: " + usernameInput + " - " + emailAddressInput);
+
+                hideView(usernameEditTextPopUpWindow);
+                hideView(emailEditTextPopUpWindow);
+                hideView(sendEmailButton);
+                revealView(oneTimeCodeEditText);
+                revealView(submitCodeButton);
+                return true; // Valid username and email found
+            }
+        }
+        return false;
     }
 
     private void sendEmailToUserToResetPassword() {
-        System.out.println("Inside email intent");
-
-        this.emailAddress = this.loginSharedPreferences.getString(SharedPreferences_Keys.EMAIL_ADDRESS.toString(), "");
-
         String hostEmail = getString(R.string.emailString);
         String hostPassword = getString(R.string.emailPassword);
 
         JavaMailUtil javaMailUtil = new JavaMailUtil(hostEmail, hostPassword, this.emailAddress);
         loadInformationToEmailIntent(javaMailUtil);
-}
+    }
 
     private void loadInformationToEmailIntent(JavaMailUtil mailUtil) {
 
@@ -274,7 +304,81 @@ public class Login extends AppCompatActivity {
     private int generateRandomCode() {
         Random random = new Random();
         this.oneTimeCode = random.nextInt(9000) + 1000;
-        System.out.println("One time code is: " + oneTimeCode);
         return this.oneTimeCode;
+    }
+
+    private void setListenerForSubmitCodeButton() {
+        submitCodeButton.setOnClickListener(v -> submitCodeButtonOnClickListener());
+    }
+
+    private void submitCodeButtonOnClickListener() {
+        String oneTimeCodeAsInput = retrieveInformationFromViewAsString(oneTimeCodeEditText);
+
+        if (isOneTimeCodeValid(oneTimeCodeAsInput)) {
+            handleCorrectCode();
+        } else {
+            handleIncorrectCode();
+        }
+    }
+
+    private boolean isOneTimeCodeValid(String oneTimeCodeAsInput) {
+        return Integer.parseInt(oneTimeCodeAsInput) == this.oneTimeCode;
+    }
+
+    private void handleCorrectCode() {
+        setForgotPasswordEditTextVisibilityOn();
+        hideView(oneTimeCodeEditText);
+        hideView(submitCodeButton);
+        revealView(changePasswordButton);
+        setChangePasswordButtonListener();
+    }
+
+    private void handleIncorrectCode() {
+        redirectMessageToast("Incorrect code");
+        this.popupWindow.dismiss();
+    }
+
+    private void setChangePasswordButtonListener() {
+        changePasswordButton.setOnClickListener(v -> processPasswordChangeAction());
+    }
+
+    private void processPasswordChangeAction() {
+        if (isNewPasswordValid()) {
+            updatePasswordInSharedPreferences(this.username);
+            redirectMessageToast("Password changed successfully");
+            this.popupWindow.dismiss();
+        } else {
+            redirectMessageToast("Invalid Passwords. Please try again");
+            this.popupWindow.dismiss();
+        }
+    }
+    // Validation Regex for Password found in Register
+    // Password must be at least 6 characters long and contain at least one letter and one number
+    private boolean isNewPasswordValid() {
+        String newPassword = retrieveInformationFromViewAsString(forgotPasswordEditText);
+        String repeatPassword = retrieveInformationFromViewAsString(forgotRepeatPasswordEditText);
+
+        return newPassword.equals(repeatPassword) &&
+                newPassword.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$");
+    }
+
+    private void updatePasswordInSharedPreferences(String username) {
+        String newPassword = retrieveInformationFromViewAsString(forgotPasswordEditText);
+
+        String userKey = generateUserKey(username);
+
+        deleteOldPassword(username);
+
+        this.loginSharedPreferencesEditor.putString(userKey + SharedPreferences_Keys.PASSWORD.toString(), newPassword);
+        this.loginSharedPreferencesEditor.apply();
+    }
+
+    private void deleteOldPassword(String username) {
+        String passwordKey = generateUserKey(username) + SharedPreferences_Keys.PASSWORD.toString();
+
+        if (this.loginSharedPreferences.contains(passwordKey)) {
+            this.loginSharedPreferencesEditor.remove(passwordKey);
+            this.loginSharedPreferencesEditor.apply();
+        }
     }
 }

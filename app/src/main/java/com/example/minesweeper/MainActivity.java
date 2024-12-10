@@ -11,12 +11,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.minesweeper.Fragments.GameFragment;
 import com.example.minesweeper.Fragments.HelpFragment;
 import com.example.minesweeper.Fragments.HomeFragment;
 import com.example.minesweeper.Fragments.SettingsFragment;
 import com.example.minesweeper.Fragments.StatsFragment;
+import com.example.minesweeper.Utils.ToastUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
@@ -64,12 +66,25 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // If the fragment has already been initialized, then instead of creating it anew (and
+    // deleting progress in the Game), just show it
     private void loadFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, fragment, fragment.getClass().getSimpleName())
-                .commit();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getSimpleName()) == null) {
+            transaction.add(R.id.fragment_container, fragment, fragment.getClass().getSimpleName());
+        } else { // If the fragment is already on the stack, just show it
+            transaction.show(fragment);
+        }
+        // Hide the other fragments
+        for (Fragment frag : getSupportFragmentManager().getFragments()) {
+            if (frag != null && frag != fragment) {
+                transaction.hide(frag);
+            }
+        }
+        transaction.commit();
     }
+
 
     private void createFragments() {
         this.homeFragment = new HomeFragment();
@@ -95,6 +110,19 @@ public class MainActivity extends AppCompatActivity {
         this.toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
     }
     // Extracts the current fragment name so it can be displayed in the Toolbar
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateToolBarWithFragmentName();
+    }
+
+    public void updateToolBarWithFragmentName() { // Public to access it from fragments
+        String currentFragmentName = getCurrentFragmentName();
+        this.toolbar.setTitle(currentFragmentName);
+    }
+
+
     private String getCurrentFragmentName() {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
 
@@ -132,12 +160,12 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.helpFragment) {
-            Toast.makeText(this, "Help Button Clicked", Toast.LENGTH_SHORT).show();
+            ToastUtil.createToast(this, "Help Button Clicked");
             showHelpDialog();
             // TODO: Help Fragment Redirection
-        } else if (id == R.id.loginButton) {
-            Toast.makeText(this, "Logout Button Clicked", Toast.LENGTH_SHORT).show();
-            // TODO: Logout Logic
+        } else if (id == R.id.logout) {
+            ToastUtil.createToast(this, "Logout Button Clicked");
+
             // SharedPreferenes and redirect to login class
         }
         return super.onOptionsItemSelected(item);
@@ -171,10 +199,9 @@ public class MainActivity extends AppCompatActivity {
     private void setBottomNavigationBarListener() {
         this.bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            // TODO: Remove New Fragment Logic from the NavBar Listener
+
             if (id == R.id.game_nav_item) {
                 this.selectedFragment = this.gameFragment;
-                // TODO: Extract to a method. Consider making it dynamic
                 Bundle gameFragmentBundle = new Bundle();
                 putHeightInformationIntoBundle(gameFragmentBundle);
                 this.selectedFragment.setArguments(gameFragmentBundle);
@@ -187,7 +214,6 @@ public class MainActivity extends AppCompatActivity {
             // and passes the name to the toolbar
             if (this.selectedFragment != null) {
                 loadFragment(selectedFragment);
-                setToolbarTitle(getCurrentFragmentName());
             }
             return true;
         });

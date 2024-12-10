@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.minesweeper.Utils.ToastUtil;
+
 public class Register extends AppCompatActivity {
     private EditText
             usernameEditText, userEmailEditText, userPasswordEditText, repeatUserPasswordEditText;
@@ -38,7 +40,7 @@ public class Register extends AppCompatActivity {
     }
 
     private void redirectMessageToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        ToastUtil.createToast(this, message);
     }
 
     private void loadViews() {
@@ -117,15 +119,23 @@ public class Register extends AppCompatActivity {
     }
 
     private void registerUser() {
-        System.out.println("Putting the following information inside the Shared Preferences Bundle:");
+        String userKey = generateUserKey(this.username);
+
+        System.out.println("Putting the following information inside the " +
+                "Shared Preferences Bundle (" + userKey + "):");
         System.out.println("Username: " + this.username);
         System.out.println("Email address: " + this.emailAddress);
         System.out.println("Password: " + this.password);
 
-        this.registerSharedPreferencesEditor.putString(SharedPreferences_Keys.USERNAME.toString(), this.username);
-        this.registerSharedPreferencesEditor.putString(SharedPreferences_Keys.EMAIL_ADDRESS.toString(), this.emailAddress);
-        this.registerSharedPreferencesEditor.putString(SharedPreferences_Keys.PASSWORD.toString(), this.password);
+        this.registerSharedPreferencesEditor.putString(userKey + SharedPreferences_Keys.USERNAME.toString(), this.username);
+        this.registerSharedPreferencesEditor.putString(userKey + SharedPreferences_Keys.EMAIL_ADDRESS.toString(), this.emailAddress);
+        this.registerSharedPreferencesEditor.putString(userKey + SharedPreferences_Keys.PASSWORD.toString(), this.password);
         this.registerSharedPreferencesEditor.apply();
+    }
+    // Generates a unique key for that user. This way we can handle multiple users simultaneously
+    // The other option, although more complicated, would be using JSON objects
+    private String generateUserKey(String username) {
+        return SharedPreferences_Keys.USER_INFORMATION_SP.toString() + "_" + username + "_";
     }
 
     private SharedPreferences createRegisterSharedPreferences() {

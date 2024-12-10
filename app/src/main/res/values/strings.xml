@@ -9,9 +9,13 @@
     <string name="loginUserPassword">Password</string>
     <string name="loginButton">Login</string>
     <string name="loginRegisterButton">Register</string>
+
     <string name="loginForgotPassword"><u>Forgot Password?</u></string>
+    <string name="typeEmailResetPassword">Your email address</string>
+    <string name="sendEmailButtonForgotPassword">Send Email</string>
     <string name="oneTimeCodeText">4 digit code from your email</string>
     <string name="submitCodeButton">Submit Code</string>
+    <string name="changePassword">Change Password</string>
 
 
     <!-- Register String Resources -->
@@ -44,7 +48,8 @@
     <string name="difficultySpinnerText">Difficulty Level</string>
     <string name="themeSpinnerText">Theme</string>
     <string name="musicSpinnerText">Background Music</string>
-    <string name="firstOptionRadio">Placeholder 1</string>
+    <string name="backgroundMusicSelector">Soundtrack</string>
+    <string name="firstOptionRadio">Default</string>
     <string name="secondOptionRadio">Placeholder 2</string>
     <string name="thirdOptionRadio">Placeholder 3</string>
 
@@ -52,13 +57,6 @@
         <item>Easy</item>
         <item>Medium</item>
         <item>Hard</item>
-        <item>Customized</item>
-    </string-array>
-
-    <string-array name="themeSpinner">
-        <item>Default</item>
-        <item>Hello Kitty</item>
-        <item>Random</item>
     </string-array>
 
     <!-- Stats Fragment -->

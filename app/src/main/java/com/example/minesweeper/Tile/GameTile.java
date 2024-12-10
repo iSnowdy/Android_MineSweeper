@@ -82,4 +82,12 @@ public class GameTile implements Tile {
         }
         return mineCounter;
     }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
 }

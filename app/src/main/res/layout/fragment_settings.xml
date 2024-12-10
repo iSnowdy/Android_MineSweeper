@@ -32,20 +32,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <!-- Theme -->
-    <TextView
-        android:id="@+id/themeText"
-        style="@style/spinnerStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/themeSpinnerText" />
-
-    <Spinner
-        android:id="@+id/themeSpinner"
-        style="@style/settingsItemStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <!-- Background Music -->
     <TextView
         android:id="@+id/musicText"
@@ -61,8 +47,15 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp" />
 
+    <TextView
+        android:id="@+id/backgroundMusicTextView"
+        style="@style/spinnerStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/backgroundMusicSelector" />
+
     <RadioGroup
-        android:id="@+id/themeRadioGroup"
+        android:id="@+id/soundtrackRadioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"

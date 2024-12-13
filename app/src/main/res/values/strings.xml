@@ -27,9 +27,6 @@
     <string name="registerRedirect">Already have an account?</string>
 
 
-    <!-- Toolbar String Resources -->
-
-
     <!-- Bottom Navbar String Resources -->
     <string name="gameNavbar">Game</string>
     <string name="configNavbar">Configuration</string>
@@ -43,6 +40,10 @@
     <string name="timeRemaining">Remaining Time </string>
     <string name="minesRemaining">Mines Remaining </string>
     <string name="resetButton">Reset Game</string>
+
+
+    <!-- Home Fragment -->
+
 
     <!-- Settings Fragment -->
     <string name="difficultySpinnerText">Difficulty Level</string>
@@ -60,14 +61,15 @@
     </string-array>
 
     <!-- Stats Fragment -->
-    <string name="avgTime">Average time:\t%1$2d seconds</string>
-    <string name="winPercentage">Win percentage:\t%1$d%</string>
-    <string name="wins">Wins:\t%1i</string>
-    <string name="losses">Losses:\t%1i</string>
-    <string name="gamesPlayed">Games played:\t%1i</string>
-    <string name="longestWinningStreak">Longest winning streak:\t%1i</string>
-    <string name="longestLosingStreak">Longest losing streak:\t%1i</string>
-    <string name="currentStreak">Current streak:\t%1i</string>
+    <string name="avgTime">Average time: %1$.2f seconds</string>
+    <string name="winPercentage">Win percentage: %1$.2f %%</string>
+    <string name="losePercentage">Lose percentage: %1$.2f %%</string>
+    <string name="wins">Wins: %1d</string>
+    <string name="losses">Losses: %1d</string>
+    <string name="gamesPlayed">Games played: %1d</string>
+    <string name="longestWinningStreak">Longest winning streak: %1d</string>
+    <string name="longestLosingStreak">Longest losing streak: %1d</string>
+    <string name="currentStreak">Current streak: %1d</string>
 
     <string name="topThreeGames">Top three games</string>
     <string name="firstTopGame">First top game</string>
@@ -80,7 +82,109 @@
     <!-- Game Fragment -->
     <string name="restartGameButton">Restart Game</string>
 
+    <!-- Help Fragment -->
+    <string name="helpFragmentHeader">How to Play Minesweeper: A Comprehensive Guide</string>
 
+    <string name="helpFragmentIntro">
+        Minesweeper is an exciting and strategic puzzle game that challenges your logic and problem-solving skills.
+        The goal is simple: clear the grid of hidden mines without triggering any of them. Below, you’ll find a detailed
+        guide explaining the rules,
+        gameplay mechanics, and features of the app</string>
+
+
+    <string name="helpFragmentSubHeader1">Understanding the Minesweeper Grid</string>
+    <string name="helpFragmentGrid">
+    <b>The Tiles</b>\n
+        The game grid consists of numerous tiles. Each tile can hide a mine or be a safe spot. Your job is to figure out
+        which tiles are safe to click and which ones to flag as potential mines.\n\n
+    <b>Numbers on the Tiles</b>\n
+        When you reveal a tile, it may display a number from 1 to 8. These numbers will tell you how many mines are hidden in the tiles
+        immediately surrounding that one.\n
+        For example, if you reveal a tile with the number "3," it means there are exactly three mines hidden in the eight
+        surrounding tiles (3x3 around that specific tile).</string>
+
+
+    <string name="helpFragmentSubHeader2">Gameplay: A Step-by-Step Gameplay</string>
+    <string name="helpFragmentGameplay">
+    <b>Starting the Game</b>\n
+        Begin by tapping on any tile. The first click is always safe, ensuring you can start exploring without triggering a mine.
+        This initial click often reveals a larger section of the grid, giving you a starting point.\n\n
+
+    <b>Interpreting the Numbers</b>\n
+        Use the numbers on the revealed tiles to deduce where the mines are located.
+        For example, if a tile displays "1" and there’s only one unrevealed tile adjacent to it, that unrevealed tile must contain a mine.\n\n
+
+    <b>Marking Mines</b>\n
+        If you suspect a tile contains a mine, long-press it to mark it with a flag.
+        Be cautious with your flags. Incorrectly marking tiles can lead to mistakes later on in the game.\n\n
+
+    <b>Revealing Safe Tiles</b>\n
+        Tap on tiles you believe are safe to reveal more of the grid. Continue this process while avoiding tiles that may contain mines.\n\n
+
+    <b>Clearing the Grid</b>\n
+        The game is won when all safe tiles are revealed and/or all mines are correctly flagged.</string>
+
+
+    <string name="helpFragmentSubHeader3">Game Over Conditions</string>
+    <string name="helpFragmentConditions">
+    <b>Triggering a Mine</b>\n
+        If you accidentally reveal a tile that contains a mine, the game ends immediately.
+        The grid will display all the mine locations to show what went wrong.\n\n
+
+    <b>Incorrect Flags</b>\n
+        While incorrect flag placement doesn’t end the game immediately, it can lead to errors in your deduction process,
+        increasing the chances of revealing a mine later. However, you can undo a tile marked as a flag by long-pressing the tile again.</string>
+
+
+    <string name="helpFragmentSubHeader4">Difficulty Levels</string>
+    <string name="helpFragmentDifficultyLevels">
+    Our app offers three levels of difficulty to accommodate players of all skill levels:\n\n
+
+    <b>Easy (8x8 grid, 10 mines)</b>\n
+        This level features a small grid with only a few mines. It is s perfect for beginners who are learning the mechanics of the game.\n\n
+
+    <b>Medium (16x16 grid, 40 mines)</b>\n
+        A medium-sized grid with a moderate number of mines. This level provides a balanced challenge for intermediate players.\n\n
+
+    <b>Hard: (30x30 grid, 120 mines)</b>\n
+        The hardest level offers a large grid densely packed with mines. It’s designed for experienced players who want to test their skills to the fullest.\n\n
+
+    Each difficulty level offers a unique gameplay experience, so feel free to experiment and challenge yourself.</string>
+
+
+    <string name="helpFragmentSubHeader5">Tips for Success</string>
+    <string name="helpFragmentTips">
+    <b>Start from the Edges</b>\n
+        Begin by clicking tiles near the edges or corners. These often provide clues that help you deduce the layout of the grid.\n\n
+
+    <b>Look for Patterns</b>\n
+        Common number patterns, like a "1" adjacent to an empty row of tiles, can help you identify safe areas.\n\n
+
+    <b>Use Flags Wisely</b>\n
+        Flagging tiles that you suspect contain mines can prevent accidental clicks, but avoid overflagging, as this might mislead your strategy.\n\n
+
+    <b>Practice Logic</b>\n
+        Minesweeper is all about logical deduction. Use the information from revealed tiles to guide your decisions.</string>
+
+
+    <string name="helpFragmentSubHeader6">Statistics and Progress Tracking</string>
+    <string name="helpFragmentStatisticsProgress">
+    Minesweeper App saves your performance after each game, allowing you to track your progress over time. Here’s some of what is recorded:\n
+
+    Total Games Played: See how many games you’ve completed across all difficulty levels.\n
+    Wins and Losses: Track how often you successfully clear the grid versus how often you hit a mine.\n
+    Average Time: Monitor the average time it takes you to complete a game.\n
+    Best Times: Each difficulty level records your fastest completion time, giving you something to strive for.\n
+
+    You can view these statistics in the app and use them as motivation to improve your gameplay and strategy.</string>
+
+
+    <string name="helpFragmentSubHeader7">Why You’ll Love Minesweeper</string>
+    <string name="helpFragmentOutro">
+    Minesweeper is more than just a game. It’s a mental workout that sharpens your problem-solving skills and rewards careful thought and planning.
+    Whether you’re a beginner exploring the game for the first time or an experienced player aiming for record times, there’s always something new to enjoy.\n\n
+
+    So, dive in, explore the grid, and have fun!</string>
 
 
 

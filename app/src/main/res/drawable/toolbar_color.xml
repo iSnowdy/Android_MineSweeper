@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <!--<gradient
+   <gradient
         android:angle="90"
-        android:endColor="@color/endColor"
-        android:centerColor="@color/startColor"
-        android:startColor="@color/lightGray"
-        android:type="linear" />-->
-
-    <gradient
-        android:angle="90"
-        android:endColor="@color/darkGray"
-        android:centerColor="@color/lightGray"
-        android:startColor="@color/darkGray"
+        android:endColor="@color/startLogin"
+        android:startColor="@color/endLogin"
         android:type="linear" />
 
-    <!-- TODO: Maybe remove this? -->
+    <!--
+       <gradient
+           android:angle="90"
+           android:endColor="@color/darkGray"
+           android:centerColor="@color/lightGray"
+           android:startColor="@color/darkGray"
+           android:type="linear" />
+
+        -->
+
 
 </shape>

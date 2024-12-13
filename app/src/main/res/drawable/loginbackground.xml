@@ -6,6 +6,5 @@
         android:type="linear"
         android:angle="90"
         />
-    <!-- TODO: Maybe remove this? -->
 
 </shape>

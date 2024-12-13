@@ -2,12 +2,9 @@ package com.example.minesweeper.Fragments;
 
 // Assets credit to: https://github.com/projojoboy/MineSweeper/blob/master/Assets/Art/mine.png
 
-import static android.content.Context.MODE_PRIVATE;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -26,22 +23,24 @@ import androidx.appcompat.widget.Toolbar;
 
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
-import com.example.minesweeper.Board.GridGameBoard;
-import com.example.minesweeper.Utils.ChronometerHelper;
-import com.example.minesweeper.Difficulty;
-import com.example.minesweeper.GameLogic.Game;
-import com.example.minesweeper.MainActivity;
+import com.example.minesweeper.JavaClasses.Board.GridGameBoard;
+import com.example.minesweeper.JavaClasses.Utils.ChronometerHelper;
+import com.example.minesweeper.JavaClasses.Difficulty;
+import com.example.minesweeper.JavaClasses.GameLogic.Game;
+import com.example.minesweeper.Activities.MainActivity;
 import com.example.minesweeper.R;
-import com.example.minesweeper.SharedPreferences_Keys;
-import com.example.minesweeper.Tile.GameTile;
-import com.example.minesweeper.Utils.SharedPreferencesUtil;
+import com.example.minesweeper.JavaClasses.SharedPreferences_Keys;
+import com.example.minesweeper.JavaClasses.Tile.GameTile;
+import com.example.minesweeper.JavaClasses.Utils.SharedPreferencesUtil;
 
 public class GameFragment extends Fragment {
     private Toolbar toolbar;
     private Menu menu;
     private GridLayout gridLayout;
     private GridGameBoard board;
+    private Difficulty difficulty;
     private Game game;
     private Chronometer chronometer;
     private ChronometerHelper chronometerHelper;
@@ -52,6 +51,7 @@ public class GameFragment extends Fragment {
     private boolean isFirstClick;
 
     private int toolbarHeight, navbarHeight, statusBarHeight, totalHeight;
+    //private String username;
 
     // Toolbar + Chronometer Configuration
     // Standard toolbar is replaced by a custom one for the Game Fragment
@@ -100,15 +100,16 @@ public class GameFragment extends Fragment {
         this.toolbar = getActivity().findViewById(R.id.toolbar);
         this.gridLayout = gameFragmentView.findViewById(R.id.gridLayout);
 
-        // TODO: What happens if the user changes difficulty while playing one game?
-        this.board = new GridGameBoard(loadDifficultyFromSettings());
+        loadDifficultyFromSettings();
+        System.out.println("Loaded difficulty: " + this.difficulty.toString());
+        this.board = new GridGameBoard(this.difficulty);
         this.game = new Game(this.board);
 
         this.isFirstClick = true;
 
         // Retrieves height values from toolbar, navbar and status bar from Main (where they
         // are created) and sets the height / width of the GameFragment according to those values
-        retrieveHeightFromMainActivity();
+        retrieveInformationFromMainActivityBundle();
         setHeight();
 
         // Game Logic here
@@ -124,18 +125,19 @@ public class GameFragment extends Fragment {
         return gameFragmentView;
     }
 
-    private Difficulty loadDifficultyFromSettings() {
+    private void loadDifficultyFromSettings() {
         // Default value is EASY
         String difficultyFromSharedPreferences = SharedPreferencesUtil.getSetting(getContext(), SharedPreferences_Keys.DIFFICULTY, Difficulty.EASY.toString());
-        return Difficulty.valueOf(difficultyFromSharedPreferences);
+        this.difficulty = Difficulty.valueOf(difficultyFromSharedPreferences);
     }
 
-    private void retrieveHeightFromMainActivity() {
+    private void retrieveInformationFromMainActivityBundle() {
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             this.toolbarHeight = bundle.getInt("toolbarHeight");
             this.navbarHeight = bundle.getInt("navbarHeight");
             this.statusBarHeight = bundle.getInt("statusBarHeight");
+            //this.username = bundle.getString("username");
         }
 
         this.totalHeight = toolbarHeight + navbarHeight + statusBarHeight;
@@ -185,11 +187,21 @@ public class GameFragment extends Fragment {
         this.chronometer.setBase(SystemClock.elapsedRealtime());
         this.chronometer.start();
     }
-
+    // Restart click condition, check again for a possible change in difficulty and
+    // restart the game
     private void restartGame() {
         this.isFirstClick = true;
+
+        loadDifficultyFromSettings();
+        System.out.println("Restarted game");
+        System.out.println("Loaded dififulty: " + this.difficulty.toString());
+        this.board = new GridGameBoard(this.difficulty);
+        this.game = new Game(this.board);
         this.game.startNewGame();
+
         resetChronometer();
+        setGameBoardSize();
+        setGameBoardGridLayout();
         loadDefaultViewsIntoGameGridLayout();
     }
 
@@ -224,7 +236,8 @@ public class GameFragment extends Fragment {
                 tileImageView.setImageResource(R.drawable.resource_default);
                 // Sets the size of each tile according to the height / width
                 // previously calculated
-                tileImageView.setMinimumHeight(this.tileImageViewWidth / this.gameBoardRows);
+                //tileImageView.setMinimumHeight(this.tileImageViewWidth / this.gameBoardRows);
+                tileImageView.setMinimumHeight(this.tileImageViewHeight / this.gameBoardRows);
                 tileImageView.setMinimumWidth(this.tileImageViewWidth / this.gameBoardColumns);
 
                 tileImageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -240,7 +253,6 @@ public class GameFragment extends Fragment {
             }
         }
     }
-    // TODO: Check if it is really working
     private void onTileClick(GameTile tile) {
         if (isFirstClick) {
             isFirstClick = false;
@@ -255,11 +267,15 @@ public class GameFragment extends Fragment {
     }
 
     private void onTileLongClick(GameTile tile) {
+        System.out.println("Long click detected");
         if (!tile.isRevealed()) {
+            System.out.println("Unrevealed tile clicked");
             if (!tile.isFlagged()) {
+                System.out.println("Flagging tile...");
                 onFlagClick(tile);
                 updateTileImage(tile);
             } else {
+                System.out.println("Unflagging tile");
                 onUnflagClick(tile);
                 updateTileImage(tile);
             }
@@ -269,7 +285,7 @@ public class GameFragment extends Fragment {
     private void onFlagClick(GameTile tile) {
         if (!tile.isRevealed()) {
             tile.flag(); // Flag the tile
-            this.board.placeFlag(tile.getRow(), tile.getCol());
+            //this.board.placeFlag(tile.getRow(), tile.getCol()); not working
             updateTileImage(tile);
         }
     }
@@ -277,33 +293,36 @@ public class GameFragment extends Fragment {
     private void onUnflagClick(GameTile tile) {
         if (tile.isFlagged()) {
             tile.removeFlag(); // Unflagging the tile
-            this.board.removeFlag(tile.getRow(), tile.getCol());
+            //this.board.removeFlag(tile.getRow(), tile.getCol()); not working
             updateTileImage(tile);
         }
     }
 
     private void updateTileImage(GameTile tile) {
-        ImageView tileButton = gridLayout.findViewWithTag(tile);
+        ImageView tileImageView = gridLayout.findViewWithTag(tile);
 
         if (tile.isRevealed()) {
             Log.d("Tile", "isMine? " + tile.isMine());
             if (tile.isMine()) {
-                tileButton.setImageResource(R.drawable.mine);
+                // TODO: Put a different image for the selected mine tile
+                tileImageView.setImageResource(R.drawable.mine);
+                revealAllBombs();
             } else {
                 int adjacentMines = tile.countAdjacentMines(board);
                 if (adjacentMines > 0) {
-                    tileButton.setImageResource(getNumberImage(adjacentMines));
+                    tileImageView.setImageResource(getNumberImage(adjacentMines));
                 } else {
-                    tileButton.setImageResource(R.drawable.empty0);
+                    tileImageView.setImageResource(R.drawable.empty0);
                     revealAdjacentTiles(tile);
                 }
             }
 
         } else if (tile.isFlagged()) {
-            tileButton.setImageResource(R.drawable.flag);
+            System.out.println("Tile is flagged. Putting image");
+            tileImageView.setImageResource(R.drawable.flag);
 
         } else {
-            tileButton.setImageResource(R.drawable.resource_default);
+            tileImageView.setImageResource(R.drawable.resource_default);
         }
     }
 
@@ -341,11 +360,30 @@ public class GameFragment extends Fragment {
         if (game.isGameOver() && game.isGameLost()) {
             System.out.println("Game lost and over!");
             int score = game.getScore();
+            this.chronometer.stop();
             showGameResultDialog(false, score);
+            saveStatsToSharedPreferences(false);
         } else if (game.isGameOver() && !game.isGameLost()) {
             System.out.println("Game won and over!");
             int score = game.getScore();
+            this.chronometer.stop();
             showGameResultDialog(true, score);
+            saveStatsToSharedPreferences(true);
+        }
+    }
+    // TODO: Ugly way of revealing the bombs. I don't like it at all
+    private void revealAllBombs() {
+        System.out.println("Inside REVEAL ALL BOMBS");
+        for (int r = 0; r < gameBoardRows; r++) {
+            for (int c = 0; c < gameBoardColumns; c++) {
+                GameTile tile = board.getTile(r, c);
+                if (tile.isMine()) {
+                    ImageView tileImageView = gridLayout.findViewWithTag(tile);
+                    tileImageView.setImageResource(R.drawable.mine);
+
+                    tile.revealTile();
+                }
+            }
         }
     }
 
@@ -354,7 +392,6 @@ public class GameFragment extends Fragment {
         String buttonText;
         Drawable drawable;
 
-        // Determina el mensaje de acuerdo al resultado
         if (isWin) {
             resultMessage = "Congratulations! You have won";
             drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.confetti_victory_svg, null);
@@ -386,6 +423,29 @@ public class GameFragment extends Fragment {
                     }
                 })
                 .show();
+    }
+
+    private void saveStatsToSharedPreferences(boolean isWin) {
+        // TODO: Implement saving stats methods here
+        System.out.println("Saving stats to Shared Preferences");
+
+        SharedPreferencesUtil.saveStat(getContext(), MainActivity.username, SharedPreferences_Keys.GAMES_PLAYED, 1);
+
+        if (isWin) {
+            SharedPreferencesUtil.saveStat(getContext(), MainActivity.username, SharedPreferences_Keys.WINS, 1);
+            SharedPreferencesUtil.saveStat(getContext(), MainActivity.username, SharedPreferences_Keys.GAMES_RESULTS, "W");
+        } else {
+            SharedPreferencesUtil.saveStat(getContext(), MainActivity.username, SharedPreferences_Keys.LOSES, 1);
+            SharedPreferencesUtil.saveStat(getContext(), MainActivity.username, SharedPreferences_Keys.GAMES_RESULTS, "L");
+        }
+
+        // I don't know if score works
+        SharedPreferencesUtil.saveStat(getContext(), MainActivity.username, SharedPreferences_Keys.SCORE, this.game.getScore());
+        // Consider int overflow situation
+        int elapsedSeconds = (int) (this.chronometerHelper.getElapsedTime() / 1000);
+        SharedPreferencesUtil.saveStat(getContext(), MainActivity.username, SharedPreferences_Keys.TIME, elapsedSeconds);
+        // Think how to implement win/lose streaks. Iterate reversed String and count W or L 's
+        StatsFragment.isBasicStatsUpdated = true;
     }
 
     // Get screen height

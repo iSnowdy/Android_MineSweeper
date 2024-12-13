@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="headerLoginSize">60sp</dimen>
-    <dimen name="headerRegisterSize">50sp</dimen>
+    <dimen name="headerRegisterSize">45sp</dimen>
     <dimen name="loginButtonSize">15sp</dimen>
 
     <dimen name="buttonWidth">150dp</dimen>

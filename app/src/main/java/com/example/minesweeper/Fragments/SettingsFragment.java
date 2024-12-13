@@ -9,8 +9,6 @@ package com.example.minesweeper.Fragments;
 
  */
 
-import static android.content.Context.MODE_PRIVATE;
-
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,21 +18,22 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.Switch;
+
 
 import androidx.fragment.app.Fragment;
 
-import com.example.minesweeper.Difficulty;
-import com.example.minesweeper.MainActivity;
+import com.example.minesweeper.JavaClasses.Difficulty;
+import com.example.minesweeper.Activities.MainActivity;
 import com.example.minesweeper.R;
-import com.example.minesweeper.SharedPreferences_Keys;
-import com.example.minesweeper.Utils.SharedPreferencesUtil;
-import com.example.minesweeper.Utils.ToastUtil;
+import com.example.minesweeper.JavaClasses.SharedPreferences_Keys;
+import com.example.minesweeper.JavaClasses.Utils.SharedPreferencesUtil;
+import com.example.minesweeper.JavaClasses.Utils.ToastUtil;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 
 public class SettingsFragment extends Fragment {
     private Spinner difficultySpinner;
-    private Switch musicSwitch;
+    private SwitchMaterial musicSwitch; // Kind of upgraded version of Switch
     private RadioGroup soundtrackRadioGroup;
     private Difficulty chosenDifficulty;
     private MediaPlayer mediaPlayer;
@@ -72,6 +71,13 @@ public class SettingsFragment extends Fragment {
         var adapter = getDifficultySpinnerAdapter();
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.difficultySpinner.setAdapter(adapter);
+        setPreviousDifficultyToSpinner();
+    }
+
+    private void setPreviousDifficultyToSpinner() {
+        String difficultyFromSharedPreferences = SharedPreferencesUtil.getSetting(getContext(), SharedPreferences_Keys.DIFFICULTY, Difficulty.EASY.toString());
+        this.chosenDifficulty = Difficulty.valueOf(difficultyFromSharedPreferences);
+        this.difficultySpinner.setSelection(this.chosenDifficulty.ordinal());
     }
 
     private ArrayAdapter<CharSequence> getDifficultySpinnerAdapter() {

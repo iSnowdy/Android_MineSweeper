@@ -18,8 +18,3 @@
         android:icon="@drawable/stats_svg"
         android:title="@string/statsNavbar" />
 </menu>
-
-<!--
-TODO: Navigate between the different fragments of the app:
-TODO: Game, Configuration, Stats
--->

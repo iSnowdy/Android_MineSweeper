@@ -3,6 +3,6 @@
     <style name="Base.Theme.Minesweeper" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
-        <item name="fontFamily">@font/pixelify_sans</item>
+
     </style>
 </resources>

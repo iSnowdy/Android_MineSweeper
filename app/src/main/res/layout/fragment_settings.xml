@@ -3,19 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_bg_img"
+    android:theme="@style/PixelFont"
     android:gravity="center"
+    android:background="@drawable/blackbg"
     android:orientation="vertical">
-
-    <!--
-    <ImageView
-        android:id="@+id/bombImageSettings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/logoAlt"
-        android:src="@drawable/bomb_svg" />
-
-    -->
 
     <!-- Difficulty -->
     <TextView
@@ -84,16 +75,3 @@
 
     </RadioGroup>
 </LinearLayout>
-
-
-    <!--
-    TODO: In settings we will be able to:
-        TODO: 1. Select the difficulty
-        TODO: 2. Choose a theme (skin)
-        TODO: 3. Choose background music
-
-    TODO: Add an information SVG besides the difficulty spinner to
-    TODO: show the user what changes in each difficulty (TOAST)
-
-    TODO: Change background image?
-    -->

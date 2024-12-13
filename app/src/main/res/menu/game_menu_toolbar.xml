@@ -19,16 +19,3 @@
         android:title="@string/minesRemaining"
         app:showAsAction="always" />
 </menu>
-
-
-<!--
-TODO: Create two different toolbars. One toolbar for the game fragment that
-TODO: will have the current state of the game (chronometer, mines left, reset button)
-TODO: and a second toolbar for all the other activities. This second toolbar will
-TODO: reflect the name of the fragment we are currently in and also three buttons.
-TODO (1) A favourite button, a (2) search button and finally (3) a home button.
-TODO: With the search button the user can quickly navigate through the different sections
-TODO: of the application. Lastly, the favourite button will mark the current
-TODO: activity / fragment as favourite and it will show first in the list of sections
-TODO inside the search button. Easy right?
--->

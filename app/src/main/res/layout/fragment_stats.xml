@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_bg_img"
+    android:background="@drawable/blackbg"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:theme="@style/PixelFont">
 
     <!-- Top Three Games Pop Up Windows -->
     <LinearLayout
@@ -114,6 +115,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/winPercentage" />
+
+    <TextView
+        android:id="@+id/losePercentageText"
+        style="@style/innerSettingsTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/losePercentage" />
 
     <TextView
         android:id="@+id/winsText"

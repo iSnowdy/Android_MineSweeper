@@ -32,4 +32,6 @@
     <color name="middleColor">#64B5F6</color>
     <color name="endColor"></color>
 
+    <color name="myColour">#7DECD2</color>
+
 </resources>

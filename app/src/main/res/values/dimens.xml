@@ -7,7 +7,7 @@
     <dimen name="buttonWidth">150dp</dimen>
     <dimen name="buttonHeight">60dp</dimen>
 
-    <dimen name="settingsTextSizes">35sp</dimen>
+    <dimen name="settingsTextSizes">30sp</dimen>
     <dimen name="settingsOptionSizes">15sp</dimen>
 
     <dimen name="statsTextSizes">15sp</dimen>

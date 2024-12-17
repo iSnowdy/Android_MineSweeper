@@ -109,8 +109,11 @@ public class StatsFragment extends Fragment {
     }
 
     private void updatePercentagesFromSharedPreferences() {
-        this.winPercentage = (float) this.wins / (float) this.gamesPlayed;
-        this.losePercentage = (float) this.loses / (float) this.gamesPlayed;
+        this.winPercentage = ((float) this.wins / (float) this.gamesPlayed) * 100;
+        this.losePercentage = ((float) this.loses / (float) this.gamesPlayed) * 100;
+
+        System.out.println("Win percentage: " + this.winPercentage);
+        System.out.println("Lose percentage: " + this.losePercentage);
 
         SharedPreferencesUtil.saveStat(
                 getContext(),

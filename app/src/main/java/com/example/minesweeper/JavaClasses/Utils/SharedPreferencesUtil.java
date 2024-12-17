@@ -82,6 +82,7 @@ public class SharedPreferencesUtil {
         boolean basicStats = isBasicStat(key);
         int currentValue = 0;
         if (basicStats) currentValue = sp.getInt(userKey, 0); // 0 Default
+        System.out.println("Is the key: " + key + " a basic stat? " + basicStats);
         sp.edit().putInt(userKey, currentValue + value).apply();
     }
 

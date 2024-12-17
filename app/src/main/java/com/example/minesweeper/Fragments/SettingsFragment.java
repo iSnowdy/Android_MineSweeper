@@ -9,6 +9,7 @@ package com.example.minesweeper.Fragments;
 
  */
 
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 
 import androidx.fragment.app.Fragment;
@@ -88,6 +90,9 @@ public class SettingsFragment extends Fragment {
         this.difficultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+
+                //((TextView) parentView.getChildAt(0)).setTextColor(Color.WHITE); TODO: Crashing the app
+
                 String difficultyFromSpinner = parentView.getItemAtPosition(position).toString();
 
                 ToastUtil.createToast(getActivity(), "You have selected: " + difficultyFromSpinner + " difficulty");

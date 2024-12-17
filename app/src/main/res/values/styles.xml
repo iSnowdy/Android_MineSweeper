@@ -71,6 +71,7 @@
         <item name="android:drawablePadding">20dp</item>
         <item name="android:layout_marginTop">40dp</item>
         <item name="android:layout_marginBottom">15dp</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <style name="settingsItemStyle" >
@@ -79,6 +80,19 @@
         <item name="android:layout_marginTop">5dp</item>
         <item name="android:letterSpacing">0.1</item>
         <item name="android:layout_marginBottom">20dp</item>
+    </style>
+
+    <!-- Switch and RadioGroup -->
+
+    <style name="radioButtonStyle" parent="settingsItemStyle">
+        <item name="android:buttonTint">@color/endLogin</item>
+    </style>
+
+
+    <style name="customSwitch">
+        <item name="colorControlActivated">@color/startLogin</item>
+        <item name="colorSwitchThumbNormal">@color/endLogin</item>
+        <item name="android:colorForeground">@color/white</item>
     </style>
 
 
